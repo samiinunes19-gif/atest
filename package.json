@@ -1,0 +1,9 @@
+{
+  "name": "medfacil",
+  "version": "1.0.0",
+  "private": true,
+  "description": "MedFácil Telemedicina — site e integração de pagamento PIX (MasterPag)",
+  "engines": {
+    "node": ">=18"
+  }
+}

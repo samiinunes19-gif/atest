@@ -1,0 +1,1432 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Solicitar Atestado Médico | MedFácil</title>
+  <link rel="icon" type="image/png" href="logo.png" />
+  <link rel="apple-touch-icon" href="logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f8fafc; color: #1e293b; -webkit-font-smoothing: antialiased; min-height: 100vh; display: flex; flex-direction: column; }
+    a { text-decoration: none; }
+    button { font-family: inherit; }
+
+    .hdr { background: #fff; border-bottom: 1px solid #e2e8f0; padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 20; }
+    .hdr-logo { display: flex; align-items: center; gap: 8px; }
+    .hdr-logo-icon { width: 36px; height: 36px; border-radius: 8px; background: #059669; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+    .hdr-logo-icon img { width: 100%; height: 100%; object-fit: contain; background: #fff; }
+    .hdr-logo-icon svg { width: 17px; height: 17px; stroke: #fff; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+    .hdr-logo-text { font-weight: 800; font-size: 13px; color: #1e293b; text-transform: uppercase; letter-spacing: .05em; }
+    .hdr-secure { display: flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 700; color: #64748b; }
+    .hdr-secure svg { width: 13px; height: 13px; stroke: #059669; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+    .prog-wrap { background: #fff; padding: 14px 20px 0; border-bottom: 1px solid #e2e8f0; }
+    .prog-bar-line { height: 6px; background: #e2e8f0; border-radius: 6px; overflow: hidden; }
+    .prog-bar-fill { height: 100%; background: linear-gradient(90deg, #125F39, #22c55e); border-radius: 6px; transition: width .5s ease; }
+    .prog-info { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+    .prog-secure { display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; color: #64748b; letter-spacing: .08em; text-transform: uppercase; }
+    .prog-secure svg { width: 14px; height: 14px; stroke: #22c55e; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .prog-label { font-size: 12px; font-weight: 600; color: #94a3b8; }
+
+    .stepper { display: flex; align-items: center; justify-content: space-between; overflow-x: auto; -webkit-overflow-scrolling: touch; padding: 12px 0 14px; min-width: 320px; }
+    .step-item { display: flex; flex-direction: column; align-items: center; flex: 1; position: relative; }
+    .step-connector { position: absolute; top: 12px; left: 50%; width: 100%; height: 2px; background: #e2e8f0; }
+    .step-connector-fill { height: 100%; background: #125F39; transition: width .3s; }
+    .step-dot { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; position: relative; z-index: 2; transition: all .3s; }
+    .step-dot.done   { background: #125F39; border: none; color: #fff; }
+    .step-dot.active { background: #fff; border: 2px solid #125F39; color: #125F39; }
+    .step-dot.pending { background: #fff; border: 2px solid #e2e8f0; color: #cbd5e1; }
+    .step-dot svg { width: 12px; height: 12px; stroke: #fff; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+    .step-lbl { margin-top: 4px; font-size: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; }
+    .step-lbl.done, .step-lbl.active { color: #125F39; }
+    .step-lbl.pending { color: #94a3b8; }
+
+    .main { flex: 1; padding: 20px 16px 60px; }
+    .container { max-width: 480px; margin: 0 auto; }
+
+    .step-hdr { margin-bottom: 20px; }
+    .step-back { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: #64748b; font-weight: 500; cursor: pointer; background: none; border: none; padding: 0 0 12px; }
+    .step-back svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .step-hdr h1 { font-size: 22px; font-weight: 800; color: #1e293b; margin-bottom: 2px; }
+    .step-hdr p { font-size: 13px; color: #94a3b8; }
+
+    .card { background: #fff; border-radius: 24px; box-shadow: 0 20px 50px rgba(0,0,0,.05); overflow: hidden; }
+    .card-body { padding: 20px; }
+
+    .problem-grid { display: flex; flex-direction: column; gap: 7px; }
+    .problem-btn { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 10px; cursor: pointer; border: 1.5px solid #e2e8f0; background: #fff; transition: all .15s; box-shadow: 0 1px 2px rgba(0,0,0,.04); }
+    .problem-btn:active { transform: scale(.99); }
+    .problem-btn.selected { border-color: #125F39; background: #f0fdf4; box-shadow: 0 2px 8px rgba(18,95,57,.1); }
+    .problem-icon { width: 38px; height: 38px; border-radius: 9px; background: #f8fafc; border: 1px solid #e8ecf0; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all .15s; }
+    .problem-icon svg { width: 20px; height: 20px; stroke: #64748b; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .problem-btn.selected .problem-icon { background: #dcfce7; border-color: #86efac; }
+    .problem-btn.selected .problem-icon svg { stroke: #125F39; }
+    .problem-lbl { font-size: 13.5px; font-weight: 600; color: #334155; flex: 1; line-height: 1.3; }
+    .problem-btn.selected .problem-lbl { color: #0f5c32; }
+    .problem-radio { width: 18px; height: 18px; border-radius: 50%; border: 2px solid #cbd5e1; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all .15s; }
+    .problem-btn.selected .problem-radio { background: #125F39; border-color: #125F39; }
+    .problem-radio-dot { width: 7px; height: 7px; border-radius: 50%; background: #fff; opacity: 0; transition: opacity .15s; }
+    .problem-btn.selected .problem-radio-dot { opacity: 1; }
+
+    .opt-btn { display: flex; align-items: center; justify-content: space-between; padding: 18px 20px; border-radius: 14px; border: 2px solid #e2e8f0; background: #fff; cursor: pointer; width: 100%; text-align: left; font-size: 15px; font-weight: 600; color: #334155; transition: all .2s; box-shadow: 0 1px 3px rgba(0,0,0,.04); }
+    .opt-btn.selected { border-color: #125F39; background: #f0fdf4; color: #125F39; box-shadow: 0 4px 12px rgba(18,95,57,.12); }
+    .opt-radio { width: 22px; height: 22px; border-radius: 50%; border: 2px solid #cbd5e1; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all .2s; }
+    .opt-btn.selected .opt-radio { background: #125F39; border-color: #125F39; }
+    .opt-radio svg { width: 13px; height: 13px; stroke: #fff; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+
+    .sym-btn { display: flex; align-items: center; justify-content: space-between; padding: 15px 16px; border-radius: 14px; border: 2px solid #e2e8f0; background: #fff; cursor: pointer; width: 100%; text-align: left; font-size: 15px; font-weight: 500; color: #334155; transition: all .15s; box-shadow: 0 1px 2px rgba(0,0,0,.03); }
+    .sym-btn.selected { border-color: #125F39; background: #f0fdf4; color: #125F39; box-shadow: 0 2px 8px rgba(18,95,57,.1); }
+    .sym-check { width: 22px; height: 22px; border-radius: 6px; border: 2px solid #cbd5e1; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all .15s; }
+    .sym-btn.selected .sym-check { background: #125F39; border-color: #125F39; }
+    .sym-check svg { width: 14px; height: 14px; stroke: #fff; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+    .sym-count { text-align: center; font-size: 13px; color: #125F39; font-weight: 600; background: #f0fdf4; padding: 10px; border-radius: 10px; margin-top: 8px; }
+
+    .date-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+    .date-pill { padding: 8px 16px; border-radius: 999px; border: 1.5px solid #e2e8f0; background: #fff; cursor: pointer; font-size: 13px; font-weight: 600; color: #64748b; transition: all .2s; }
+    .date-pill.selected { border-color: #059669; background: #059669; color: #fff; box-shadow: 0 2px 8px rgba(5,150,105,.4); }
+    .date-input { width: 100%; padding: 12px 16px; border: 2px solid #6ee7b7; border-radius: 14px; font-size: 14px; font-family: inherit; background: rgba(236,253,245,.5); outline: none; margin-top: 10px; }
+
+    .days-list { display: flex; flex-direction: column; gap: 10px; }
+    .day-row { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-radius: 999px; border: 2px solid #e2e8f0; background: #fff; cursor: pointer; transition: all .2s; }
+    .day-row.selected { border-color: #059669; background: #f0fdf4; }
+    .day-row-lbl { font-size: 15px; font-weight: 500; color: #475569; }
+    .day-row.selected .day-row-lbl { color: #059669; font-weight: 600; }
+    .day-row-price { font-size: 15px; font-weight: 700; color: #059669; }
+
+    .hosp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .hosp-btn { border: 2px solid #e2e8f0; border-radius: 24px; padding: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; cursor: pointer; transition: all .2s; min-height: 110px; background: #fff; }
+    .hosp-btn.selected { border-color: #059669; background: #f0fdf4; }
+    .hosp-logo { height: 44px; width: 100%; display: flex; align-items: center; justify-content: center; }
+    .hosp-logo img { max-height: 44px; max-width: 100%; object-fit: contain; }
+    .hosp-name { font-size: 11px; font-weight: 600; color: #475569; text-align: center; line-height: 1.3; }
+    .hosp-btn.selected .hosp-name { color: #047857; }
+
+    .field { margin-bottom: 18px; }
+    .field label { display: block; font-size: 14px; font-weight: 600; color: #334155; margin-bottom: 7px; }
+    .field .req { color: #ef4444; }
+    .field input, .field select, .field textarea { width: 100%; padding: 14px 16px; border: 2px solid #e2e8f0; border-radius: 14px; font-size: 15px; font-family: inherit; color: #1e293b; background: #fff; outline: none; transition: border-color .2s; -webkit-appearance: none; }
+    .field input:focus, .field select:focus, .field textarea:focus { border-color: #059669; }
+    .field input.valid   { border-color: #22c55e; }
+    .field input.invalid { border-color: #ef4444; }
+    .field-msg { font-size: 12px; margin-top: 5px; display: flex; align-items: center; gap: 4px; font-weight: 600; }
+    .field-msg.ok  { color: #22c55e; }
+    .field-msg.err { color: #ef4444; }
+    .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+    .info-box { display: flex; align-items: flex-start; gap: 10px; padding: 12px 14px; border-radius: 12px; font-size: 13px; line-height: 1.5; margin-top: 8px; }
+    .info-box.teal   { background: #e6fffa; border: 1px solid #b2f5ea; color: #2c7a7b; }
+    .info-box.yellow { background: #fef3c7; border: 1px solid #fde68a; color: #92400e; }
+    .info-box.slate  { background: #f8fafc; border: 1px solid #e2e8f0; color: #64748b; }
+    .info-box svg { width: 16px; height: 16px; flex-shrink: 0; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+    .upsell-card { border: 1.5px solid #e4e4e4; border-radius: 12px; overflow: hidden; }
+    .upsell-header { display: flex; align-items: center; gap: 7px; padding: 9px 14px; background: linear-gradient(135deg, #eafff3, #d8f5e8); font-size: 12.5px; font-weight: 700; color: #1a7040; }
+    .upsell-header svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+    .upsell-item { display: flex; align-items: center; gap: 10px; padding: 11px 14px; border-bottom: 1px solid #f2f2f2; cursor: pointer; transition: background .15s; }
+    .upsell-item:last-child { border-bottom: none; }
+    .upsell-item.checked { background: rgba(18,95,57,.04); }
+    .upsell-circle { width: 18px; height: 18px; border: 2px solid #ddd; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all .15s; }
+    .upsell-item.checked .upsell-circle { background: #125F39; border-color: #125F39; }
+    .upsell-circle svg { width: 10px; height: 10px; stroke: #fff; fill: none; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+    .upsell-body { flex: 1; min-width: 0; }
+    .upsell-title { font-size: 13px; font-weight: 700; color: #222; display: flex; align-items: center; gap: 5px; }
+    .upsell-title svg { width: 13px; height: 13px; stroke: #125F39; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+    .upsell-badge { background: #125F39; color: #fff; font-size: 9px; font-weight: 800; padding: 1px 6px; border-radius: 3px; letter-spacing: .2px; }
+    .upsell-desc { font-size: 11px; color: #999; line-height: 1.35; margin-top: 2px; }
+    .upsell-price { font-weight: 800; color: #125F39; font-size: 13px; white-space: nowrap; flex-shrink: 0; }
+
+    .cert-preview { background: #fff; border: 1px solid #c8c4b8; border-radius: 4px; font-family: 'Times New Roman', Georgia, serif; font-size: 12.5px; line-height: 1.8; color: #111; box-shadow: 0 4px 18px rgba(0,0,0,.12), inset 0 0 60px rgba(255,253,240,.5); position: relative; overflow: hidden; user-select: none; -webkit-user-select: none; }
+    .cert-watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%) rotate(-35deg); font-size: 52px; font-weight: 900; color: rgba(185,28,28,.09); white-space: nowrap; pointer-events: none; font-family: Arial Black, Arial, sans-serif; letter-spacing: 6px; z-index: 0; }
+    .cert-header { padding: 11px 14px 9px; border-bottom: 2px solid #1a3a2a; display: flex; align-items: center; gap: 10px; position: relative; z-index: 1; background: #fafaf8; }
+    .cert-header-logo { width: 38px; height: 38px; border-radius: 5px; background: #1a3a2a; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .cert-header-logo svg { width: 22px; height: 22px; stroke: #fff; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .cert-header-info { flex: 1; min-width: 0; }
+    .cert-header-name { font-size: 11px; font-weight: 800; color: #1a3a2a; letter-spacing: .4px; font-family: Arial, sans-serif; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .cert-header-sub  { font-size: 9px; color: #666; font-family: Arial, sans-serif; margin-top: 1px; }
+    .cert-header-crm  { font-size: 9px; color: #888; font-family: Arial, sans-serif; margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .cert-header-num  { font-size: 9px; color: #aaa; font-family: Arial, sans-serif; text-align: right; white-space: nowrap; flex-shrink: 0; }
+    .cert-divider { height: 3px; background: linear-gradient(90deg, #1a3a2a 0%, #2d6a4f 55%, #95d5b2 100%); }
+    .cert-inner { padding: 14px 16px 16px; position: relative; z-index: 1; }
+    .cert-title { text-align: center; font-size: 13px; font-weight: 800; letter-spacing: 2.5px; text-transform: uppercase; margin-bottom: 14px; color: #1a3a2a; border-bottom: 1px solid #e0e0e0; padding-bottom: 9px; font-family: Arial, sans-serif; }
+    .cert-body { text-align: justify; margin-bottom: 10px; font-size: 12.5px; line-height: 1.8; hyphens: auto; }
+    .cert-u { font-weight: 700; color: #0d0d0d; border-bottom: 1.5px solid #222; }
+    .cert-sig-row { display: flex; align-items: flex-end; justify-content: space-between; margin-top: 20px; padding-top: 14px; border-top: 1px dashed #bbb; gap: 8px; }
+    .cert-sig-block { text-align: center; flex: 1; }
+    .cert-sig-line { width: 120px; border-bottom: 1px solid #333; margin: 0 auto 5px; }
+    .cert-sig-name { font-size: 11px; font-weight: 700; color: #1a3a2a; font-family: Arial, sans-serif; }
+    .cert-sig-esp  { font-size: 9.5px; color: #555; margin-top: 2px; font-family: Arial, sans-serif; }
+    .cert-sig-crm  { font-size: 9.5px; color: #888; font-family: Arial, sans-serif; }
+    .cert-stamp { width: 54px; height: 54px; border-radius: 50%; border: 2px solid #1a3a2a; display: flex; align-items: center; justify-content: center; opacity: .16; flex-shrink: 0; }
+    .cert-stamp svg { width: 28px; height: 28px; stroke: #1a3a2a; fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+    .cert-footer { background: #f7f6f2; border-top: 1px solid #e0ddd5; padding: 7px 14px; display: flex; align-items: center; gap: 10px; justify-content: space-between; }
+    .cert-footer-lgpd { font-size: 8.5px; color: #999; font-family: Arial, sans-serif; line-height: 1.45; flex: 1; }
+    .cert-footer-qr { width: 34px; height: 34px; background: #ddd; border-radius: 3px; display: flex; align-items: center; justify-content: center; font-size: 7.5px; color: #999; font-family: Arial, sans-serif; text-align: center; line-height: 1.2; flex-shrink: 0; }
+    .cert-note { font-size: 10px; color: #aaa; text-align: center; margin-top: 8px; font-style: italic; line-height: 1.5; padding: 0 4px; }
+    .consulta-card { display:flex; flex-direction:column; gap:10px; margin-bottom:22px; }
+    .consulta-opt { border:1.5px solid #e2e8f0; border-radius:12px; padding:16px; cursor:pointer; transition:all .18s; background:#fff; display:flex; align-items:flex-start; gap:14px; box-shadow:0 1px 3px rgba(0,0,0,.04); }
+    .consulta-opt:active { transform:scale(.99); }
+    .consulta-opt.selected { border-color:#125F39; background:#f6fef9; box-shadow:0 2px 10px rgba(18,95,57,.1); }
+    .consulta-opt-icon { width:42px; height:42px; border-radius:10px; background:#f1f5f9; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:all .18s; }
+    .consulta-opt-icon svg { width:22px; height:22px; stroke:#64748b; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+    .consulta-opt.selected .consulta-opt-icon { background:#d1fae5; }
+    .consulta-opt.selected .consulta-opt-icon svg { stroke:#0f5c32; }
+    .consulta-opt-body { flex:1; min-width:0; }
+    .consulta-opt-title { font-size:14px; font-weight:700; color:#1e293b; margin-bottom:4px; line-height:1.3; }
+    .consulta-opt.selected .consulta-opt-title { color:#0f5c32; }
+    .consulta-opt-desc { font-size:12px; color:#64748b; line-height:1.5; }
+    .consulta-opt-radio { width:20px; height:20px; border-radius:50%; border:2px solid #cbd5e1; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px; transition:all .18s; }
+    .consulta-opt.selected .consulta-opt-radio { background:#125F39; border-color:#125F39; }
+    .consulta-opt-radio-dot { width:8px; height:8px; border-radius:50%; background:#fff; opacity:0; transition:opacity .15s; }
+    .consulta-opt.selected .consulta-opt-radio-dot { opacity:1; }
+
+    .sched-wrap { margin-top:14px; border:1.5px solid #d1fae5; background:#f6fef9; border-radius:12px; padding:14px; animation:schedIn .25s ease; }
+    @keyframes schedIn { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
+    .sched-label { font-size:13px; font-weight:700; color:#0f5c32; margin-bottom:10px; display:flex; align-items:center; gap:7px; }
+    .sched-label svg { width:15px; height:15px; stroke:#125F39; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+    .sched-opts { display:flex; flex-direction:column; gap:8px; }
+    .sched-opt { display:flex; align-items:center; gap:11px; padding:12px; border:1.5px solid #e2e8f0; border-radius:10px; background:#fff; cursor:pointer; transition:all .15s; }
+    .sched-opt.selected { border-color:#125F39; background:#eafff3; }
+    .sched-opt-icon { width:34px; height:34px; border-radius:8px; background:#f1f5f9; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:all .15s; }
+    .sched-opt-icon svg { width:18px; height:18px; stroke:#64748b; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+    .sched-opt.selected .sched-opt-icon { background:#d1fae5; }
+    .sched-opt.selected .sched-opt-icon svg { stroke:#0f5c32; }
+    .sched-opt-body { flex:1; min-width:0; }
+    .sched-opt-title { font-size:13.5px; font-weight:700; color:#1e293b; line-height:1.25; }
+    .sched-opt.selected .sched-opt-title { color:#0f5c32; }
+    .sched-opt-sub { font-size:11px; color:#94a3b8; line-height:1.4; margin-top:1px; }
+    .sched-opt-radio { width:18px; height:18px; border-radius:50%; border:2px solid #cbd5e1; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:all .15s; }
+    .sched-opt.selected .sched-opt-radio { background:#125F39; border-color:#125F39; }
+    .sched-opt-radio-dot { width:7px; height:7px; border-radius:50%; background:#fff; opacity:0; }
+    .sched-opt.selected .sched-opt-radio-dot { opacity:1; }
+    .sched-fields { display:flex; gap:8px; margin-top:10px; }
+    .sched-fields .sf { flex:1; min-width:0; }
+    .sched-fields label { display:block; font-size:11px; font-weight:600; color:#64748b; margin-bottom:4px; }
+    .sched-fields input { width:100%; padding:10px 12px; border:1.5px solid #cbd5e1; border-radius:9px; font-size:14px; font-family:inherit; color:#1e293b; outline:none; background:#fff; }
+    .sched-fields input:focus { border-color:#125F39; }
+    .sched-hint { margin-top:8px; font-size:11.5px; font-weight:600; color:#b91c1c; display:flex; align-items:center; gap:6px; }
+    .sched-hint::before { content:'!'; display:inline-flex; align-items:center; justify-content:center; width:15px; height:15px; border-radius:50%; background:#b91c1c; color:#fff; font-size:10px; font-weight:800; flex-shrink:0; }
+    .sched-hint.ok { color:#0f5c32; }
+    .sched-hint.ok::before { content:'✓'; background:#125F39; }
+
+    .plan-modal { position:fixed; inset:0; z-index:200; background:#fff; overflow-y:auto; display:flex; flex-direction:column; max-width:480px; margin:0 auto; }
+    .plan-modal-hdr { background:linear-gradient(135deg,#0d4f2e,#125F39); padding:24px 20px 20px; text-align:center; }
+    .plan-modal-hdr-icon { width:52px; height:52px; background:rgba(255,255,255,.15); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 12px; }
+    .plan-modal-hdr-icon svg { width:28px; height:28px; stroke:#fff; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+    .plan-modal-hdr h2 { color:#fff; font-size:20px; font-weight:800; margin-bottom:4px; }
+    .plan-modal-hdr p { color:rgba(255,255,255,.75); font-size:13px; }
+    .plan-mini { display:flex; flex-direction:column; gap:5px; }
+    .plan-mini-row { display:flex; align-items:flex-start; gap:7px; font-size:11.5px; color:#475569; line-height:1.4; }
+    .plan-mini-row svg { width:12px; height:12px; stroke:#125F39; fill:none; stroke-width:3; stroke-linecap:round; stroke-linejoin:round; flex-shrink:0; margin-top:2px; }
+    .plan-mini-row b { color:#1e293b; font-weight:700; }
+    .plan-benefits { padding:16px 20px; border-bottom:1px solid #f0f0f0; display:flex; flex-direction:column; gap:10px; }
+    .plan-benefit { display:flex; align-items:center; gap:10px; font-size:13.5px; color:#1a3a2a; font-weight:500; }
+    .plan-benefit-check { width:20px; height:20px; border-radius:50%; background:#125F39; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .plan-benefit-check svg { width:11px; height:11px; stroke:#fff; fill:none; stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
+    .plan-pix-section { padding:16px 20px 24px; flex:1; }
+    .plan-price-label { font-size:12px; color:#888; text-align:center; margin-bottom:2px; }
+    .plan-price-val { font-size:34px; font-weight:900; color:#125F39; text-align:center; margin-bottom:4px; }
+    .plan-price-sub { font-size:11px; color:#aaa; text-align:center; margin-bottom:16px; }
+
+    .terms-row { display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; border-radius: 8px; cursor: pointer; border: 1px solid #e8e8e8; background: #f8f9fa; font-size: 12px; color: #666; line-height: 1.45; }
+    .terms-row.green { background: #f0faf5; border-color: #125F39; color: #1a5c35; }
+    .terms-row input[type=checkbox] { width: 16px; height: 16px; accent-color: #125F39; flex-shrink: 0; margin-top: 1px; cursor: pointer; }
+
+    .total-row { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; }
+    .total-label { font-size: 16px; font-weight: 800; color: #333; }
+    .total-value { font-size: 22px; font-weight: 800; color: #125F39; }
+
+    .pix-bg { background: #f8f9fa; padding: 16px; border-radius: 12px; margin-bottom: 14px; text-align: center; }
+    .pix-amount-label { font-size: 13px; color: #666; margin-bottom: 4px; }
+    .pix-amount { font-size: 28px; font-weight: 800; color: #125F39; margin-bottom: 14px; }
+    .pix-qr-box { background: #fff; padding: 12px; border-radius: 10px; display: inline-block; margin-bottom: 10px; }
+    .pix-qr-box img { width: 160px; height: 160px; display: block; }
+    .pix-expiry { font-size: 11px; color: #666; margin-bottom: 14px; }
+    .pix-copy-area { background: #f0f0f0; border: 2px dashed #ccc; border-radius: 8px; padding: 10px; margin-bottom: 10px; font-family: monospace; font-size: 11px; color: #333; word-break: break-all; text-align: left; max-height: 70px; overflow-y: auto; line-height: 1.4; cursor: pointer; user-select: all; -webkit-user-select: all; transition: all .2s; }
+    .pix-copy-area.copied { background: #d4edda; border-color: #28a745; color: #155724; border-style: solid; }
+    .pix-copy-btn { width: 100%; background: #125F39; color: #fff; border: none; border-radius: 8px; padding: 12px; font-size: 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all .2s; font-family: inherit; }
+    .pix-copy-btn.copied { background: #d4edda; color: #155724; }
+    .pix-copy-btn svg { width: 17px; height: 17px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+    .upload-box { border: 2px dashed #ccc; border-radius: 12px; padding: 20px; text-align: center; background: #fff; cursor: pointer; transition: all .2s; }
+    .upload-box.valid { border-color: #22c55e; background: #f0fdf4; border-style: solid; }
+    .upload-box-icon { width: 40px; height: 40px; margin: 0 auto 10px; }
+    .upload-box-icon svg { width: 100%; height: 100%; stroke: #125F39; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .upload-box h4 { font-size: 14px; font-weight: 700; color: #333; margin-bottom: 4px; }
+    .upload-box p  { font-size: 12px; color: #888; }
+    .upload-status { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 13px; margin-top: 10px; font-weight: 600; }
+    .upload-status.ok  { color: #22c55e; }
+    .upload-status.err { color: #ef4444; }
+    .upload-status svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+    .nav-row { display: flex; align-items: center; justify-content: space-between; padding-top: 22px; margin-top: 8px; border-top: 1px solid #f1f5f9; }
+    .btn-prev { display: flex; align-items: center; gap: 10px; background: none; border: none; cursor: pointer; padding: 8px; }
+    .btn-prev svg { width: 20px; height: 20px; stroke: #666; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .btn-prev-txt { display: flex; flex-direction: column; align-items: flex-start; line-height: 1.2; }
+    .btn-prev-txt span:first-child { font-size: 11px; color: #999; }
+    .btn-prev-txt span:last-child  { font-size: 14px; font-weight: 600; color: #555; }
+    .btn-next-nav { display: flex; align-items: center; gap: 12px; border: none; border-radius: 14px; padding: 14px 24px; font-size: 15px; font-weight: 800; cursor: pointer; background: linear-gradient(135deg, #125F39, #0d4a2c); color: #fff; box-shadow: 0 4px 14px rgba(18,95,57,.35); transition: all .2s; font-family: inherit; }
+    .btn-next-nav:disabled { background: #e2e8f0; color: #94a3b8; box-shadow: none; cursor: not-allowed; }
+    .btn-next-nav:not(:disabled):active { transform: scale(.97); }
+    .btn-next-nav svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+    .btn-next-nav-txt { display: flex; flex-direction: column; align-items: flex-start; line-height: 1.2; }
+    .btn-next-nav-txt span:first-child { font-size: 10px; opacity: .8; }
+    .btn-next-nav-txt span:last-child  { font-size: 15px; font-weight: 800; }
+
+    .btn-primary { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 16px; border: none; border-radius: 14px; font-size: 16px; font-weight: 800; cursor: pointer; color: #fff; background: linear-gradient(135deg, #125F39, #0d4a2c); box-shadow: 0 4px 14px rgba(18,95,57,.3); transition: all .2s; font-family: inherit; }
+    .btn-primary:disabled { background: #e2e8f0; color: #94a3b8; box-shadow: none; cursor: not-allowed; }
+    .btn-primary:not(:disabled):active { transform: scale(.97); }
+    .btn-primary svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+    .btn-back-sm { display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; background: none; border: none; cursor: pointer; color: #64748b; font-size: 14px; font-weight: 600; padding: 12px; margin-top: 6px; font-family: inherit; }
+    .btn-back-sm svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+    .badges { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; margin-top: 24px; }
+    .badge { display: flex; align-items: center; gap: 6px; font-size: 13px; color: #64748b; }
+    .badge svg { width: 18px; height: 18px; stroke: #059669; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+    footer { background: #0f172a; color: #fff; padding: 36px 20px; margin-top: 32px; }
+    .footer-inner { max-width: 480px; margin: 0 auto; }
+    .footer-logo { display: flex; flex-direction: column; align-items: center; margin-bottom: 20px; text-align: center; }
+    .footer-logo-icon { width: 44px; height: 44px; border-radius: 12px; background: rgba(34,197,94,.15); display: flex; align-items: center; justify-content: center; margin-bottom: 10px; }
+    .footer-logo-icon svg { width: 22px; height: 22px; stroke: #4ade80; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .footer-name { font-size: 16px; font-weight: 800; }
+    .footer-sub  { font-size: 13px; font-weight: 700; color: #4ade80; }
+    .footer-desc { font-size: 12px; color: #64748b; margin-top: 6px; }
+    .footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; font-size: 12px; margin: 18px 0; }
+    .footer-links a { color: #64748b; transition: color .15s; }
+    .footer-links a:hover { color: #4ade80; }
+    .footer-sep { color: #1e293b; }
+    .footer-info { border-top: 1px solid #1e293b; padding-top: 16px; text-align: center; font-size: 11px; color: #64748b; line-height: 1.8; }
+    .footer-phone { color: #4ade80; font-size: 13px; font-weight: 700; margin-top: 6px; }
+    .footer-copy { border-top: 1px solid #1e293b; margin-top: 16px; padding-top: 14px; font-size: 10px; color: #334155; text-align: center; }
+
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.6); display: flex; align-items: center; justify-content: center; z-index: 999; padding: 16px; }
+    .modal-box { background: #fff; border-radius: 20px; padding: 32px 24px; max-width: 360px; width: 100%; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,.3); }
+    .modal-icon { width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, #22c55e, #16a34a); display: flex; align-items: center; justify-content: center; margin: 0 auto 18px; box-shadow: 0 8px 24px rgba(34,197,94,.4); }
+    .modal-icon svg { width: 44px; height: 44px; stroke: #fff; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+    .modal-title { font-size: 22px; font-weight: 800; color: #1a1a1a; margin-bottom: 6px; }
+    .modal-sub   { font-size: 14px; color: #666; margin-bottom: 20px; line-height: 1.5; }
+    .modal-info  { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 16px; margin-bottom: 18px; text-align: left; }
+    .modal-info-title { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700; color: #15803d; margin-bottom: 10px; }
+    .modal-info-title svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .modal-info-body { font-size: 13px; color: #166534; line-height: 1.6; margin-bottom: 10px; }
+    .modal-email-box { background: #fff; border: 1px solid #86efac; border-radius: 8px; padding: 10px 12px; display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; color: #15803d; word-break: break-all; }
+    .modal-note { font-size: 12px; color: #888; margin-bottom: 18px; line-height: 1.5; }
+    .modal-btn { width: 100%; background: linear-gradient(135deg, #125F39, #0d4a2c); color: #fff; border: none; border-radius: 12px; padding: 16px; font-size: 16px; font-weight: 800; cursor: pointer; font-family: inherit; }
+
+    .mb-16 { margin-bottom: 16px; }
+    .mb-20 { margin-bottom: 20px; }
+    .section-title { font-size: 14px; font-weight: 700; color: #334155; margin-bottom: 10px; }
+    .section-title .req { color: #ef4444; }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+<header class="hdr">
+  <a class="hdr-logo" href="/index.html" style="text-decoration:none;cursor:pointer" title="Voltar ao início">
+    <div class="hdr-logo-icon">
+      <img src="logo.png" alt="MedFácil" onerror="this.parentNode.innerHTML='<svg viewBox=\'0 0 24 24\'><path d=\'M9 12h6m-3-3v6\'/><rect x=\'3\' y=\'5\' width=\'18\' height=\'16\' rx=\'2\'/></svg>'" />
+    </div>
+    <span class="hdr-logo-text">MedFácil</span>
+  </a>
+  <div class="hdr-secure">
+    <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    Ambiente 100% Seguro
+  </div>
+</header>
+
+<div class="prog-wrap">
+  <div class="prog-info">
+    <div class="prog-secure">
+      <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      Ambiente 100% Seguro
+    </div>
+    <div class="prog-label" id="prog-label">Etapa 1 de 8</div>
+  </div>
+  <div class="prog-bar-line">
+    <div class="prog-bar-fill" id="prog-fill" style="width:12.5%"></div>
+  </div>
+  <div class="stepper" id="stepper"></div>
+</div>
+
+<main class="main">
+<div class="container">
+
+  <div class="step-hdr">
+    <button class="step-back" id="btn-back-top" onclick="prevStep()">
+      <svg viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      Voltar
+    </button>
+    <h1 id="hdr-title">Conte sobre sua saúde</h1>
+    <p id="hdr-sub">Etapa 1 de 8</p>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+
+      <!-- STEP 1 -->
+      <div id="step-1">
+        <div style="margin-bottom:20px">
+          <h3 style="font-size:18px;font-weight:800;color:#1e293b;margin-bottom:4px">Qual é o seu problema de saúde?</h3>
+          <p style="font-size:13px;color:#94a3b8">Selecione a condição que melhor descreve seu quadro</p>
+        </div>
+        <div class="problem-grid">
+          <div class="problem-btn" data-val="resfriado" onclick="selectProblem(this)">
+            <div class="problem-icon"><svg viewBox="0 0 24 24"><path d="M14 14.76V3.5a2.5 2.5 0 00-5 0v11.26a4.5 4.5 0 105 0z"/></svg></div>
+            <span class="problem-lbl">Resfriado / Gripe</span>
+            <div class="problem-radio"><div class="problem-radio-dot"></div></div>
+          </div>
+          <div class="problem-btn" data-val="gastroenterite" onclick="selectProblem(this)">
+            <div class="problem-icon"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+            <span class="problem-lbl">Gastroenterite</span>
+            <div class="problem-radio"><div class="problem-radio-dot"></div></div>
+          </div>
+          <div class="problem-btn" data-val="coronavirus" onclick="selectProblem(this)">
+            <div class="problem-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg></div>
+            <span class="problem-lbl">Coronavírus / COVID-19</span>
+            <div class="problem-radio"><div class="problem-radio-dot"></div></div>
+          </div>
+          <div class="problem-btn" data-val="estresse" onclick="selectProblem(this)">
+            <div class="problem-icon"><svg viewBox="0 0 24 24"><path d="M9.5 2A2.5 2.5 0 0112 4.5v15a2.5 2.5 0 01-4.96-.46 2.5 2.5 0 01-1.07-4.89 3 3 0 01.34-5.58 2.5 2.5 0 013.19-3.47zM14.5 2A2.5 2.5 0 0112 4.5v15a2.5 2.5 0 004.96-.46 2.5 2.5 0 001.07-4.89 3 3 0 00-.34-5.58 2.5 2.5 0 00-3.19-3.47z"/></svg></div>
+            <span class="problem-lbl">Estresse / Ansiedade</span>
+            <div class="problem-radio"><div class="problem-radio-dot"></div></div>
+          </div>
+          <div class="problem-btn" data-val="enxaqueca" onclick="selectProblem(this)">
+            <div class="problem-icon"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/><path d="M15 7h.01M12 10h.01"/></svg></div>
+            <span class="problem-lbl">Enxaqueca / Cefaleia</span>
+            <div class="problem-radio"><div class="problem-radio-dot"></div></div>
+          </div>
+          <div class="problem-btn" data-val="dor-costas" onclick="selectProblem(this)">
+            <div class="problem-icon"><svg viewBox="0 0 24 24"><path d="M12 2v20M8 6l4-4 4 4M8 18l4 4 4-4M4 12h4M16 12h4"/></svg></div>
+            <span class="problem-lbl">Dor nas costas / Coluna</span>
+            <div class="problem-radio"><div class="problem-radio-dot"></div></div>
+          </div>
+          <div class="problem-btn" data-val="colica" onclick="selectProblem(this)">
+            <div class="problem-icon"><svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg></div>
+            <span class="problem-lbl">Cólica menstrual / TPM</span>
+            <div class="problem-radio"><div class="problem-radio-dot"></div></div>
+          </div>
+          <div class="problem-btn" data-val="cistite" onclick="selectProblem(this)">
+            <div class="problem-icon"><svg viewBox="0 0 24 24"><path d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z"/></svg></div>
+            <span class="problem-lbl">Cistite / Infecção urinária</span>
+            <div class="problem-radio"><div class="problem-radio-dot"></div></div>
+          </div>
+          <div class="problem-btn" data-val="outros" onclick="selectProblem(this)">
+            <div class="problem-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg></div>
+            <span class="problem-lbl">Outro problema de saúde</span>
+            <div class="problem-radio"><div class="problem-radio-dot"></div></div>
+          </div>
+        </div>
+        <div style="margin-top:22px;padding-top:20px;border-top:1px solid #f1f5f9">
+          <button class="btn-primary" id="btn-s1" onclick="nextStep()" disabled>
+            Continuar <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- STEP 2 -->
+      <div id="step-2" class="hidden">
+        <div style="text-align:center;margin-bottom:24px">
+          <h3 style="font-size:20px;font-weight:800;color:#1e293b;margin-bottom:8px">Possui diagnóstico médico?</h3>
+          <p style="font-size:14px;color:#64748b;line-height:1.5">Algum médico já confirmou esse problema de saúde em consulta presencial?</p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:22px">
+          <button class="opt-btn" data-val="Sim" onclick="selectDiag(this)">
+            Sim, já fui diagnosticado
+            <div class="opt-radio"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></div>
+          </button>
+          <button class="opt-btn" data-val="Não" onclick="selectDiag(this)">
+            Não, ainda não consultei
+            <div class="opt-radio"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></div>
+          </button>
+        </div>
+        <div class="info-box slate">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+          Essa informação ajuda o médico a avaliar seu caso com mais precisão.
+        </div>
+        <div style="margin-top:22px;padding-top:20px;border-top:1px solid #f1f5f9">
+          <button class="btn-primary" id="btn-s2" onclick="nextStep()" disabled>
+            Continuar <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+          <button class="btn-back-sm" onclick="prevStep()"><svg viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>Voltar</button>
+        </div>
+      </div>
+
+      <!-- STEP 3 -->
+      <div id="step-3" class="hidden">
+        <div style="text-align:center;margin-bottom:20px">
+          <h3 style="font-size:20px;font-weight:800;color:#1e293b;margin-bottom:8px">Quais sintomas você sente?</h3>
+          <p style="font-size:14px;color:#64748b">Selecione todos os que se aplicam ao seu caso</p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px" id="sym-list"></div>
+        <div class="sym-count hidden" id="sym-count"></div>
+        <div style="margin-top:22px;padding-top:20px;border-top:1px solid #f1f5f9">
+          <button class="btn-primary" id="btn-s3" onclick="nextStep()" disabled>
+            Continuar <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+          <button class="btn-back-sm" onclick="prevStep()"><svg viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>Voltar</button>
+        </div>
+      </div>
+
+      <!-- STEP 4 -->
+      <div id="step-4" class="hidden">
+        <div style="margin-bottom:24px">
+          <h3 style="font-size:18px;font-weight:800;color:#1e293b;margin-bottom:4px">Como prefere seu atendimento?</h3>
+          <p style="font-size:13px;color:#94a3b8">Escolha a modalidade mais adequada para você</p>
+        </div>
+
+        <div class="consulta-card">
+          <div class="consulta-opt selected" id="copt-atestado" onclick="selectConsulta('atestado')">
+            <div class="consulta-opt-icon">
+              <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
+            </div>
+            <div class="consulta-opt-body">
+              <div class="consulta-opt-title">Somente Atestado Médico</div>
+              <div class="consulta-opt-desc">Avaliação por questionário clínico com médico. Atestado emitido digitalmente em até 5 minutos.</div>
+            </div>
+            <div class="consulta-opt-radio"><div class="consulta-opt-radio-dot"></div></div>
+          </div>
+
+          <div class="consulta-opt" id="copt-video" onclick="selectConsulta('video')">
+            <div class="consulta-opt-icon">
+              <svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+            </div>
+            <div class="consulta-opt-body">
+              <div class="consulta-opt-title">Consulta por Videochamada</div>
+              <div class="consulta-opt-desc">Atendimento ao vivo com médico via vídeo. Atestado emitido ao final da consulta.</div>
+            </div>
+            <div class="consulta-opt-radio"><div class="consulta-opt-radio-dot"></div></div>
+          </div>
+        </div>
+
+        <div id="sched-wrap" class="sched-wrap hidden">
+          <div class="sched-label">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            Quando deseja ser atendido?
+          </div>
+          <div class="sched-opts">
+            <div class="sched-opt selected" id="sopt-agora" onclick="selectSched('agora')">
+              <div class="sched-opt-icon"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+              <div class="sched-opt-body">
+                <div class="sched-opt-title">Agora (atendimento imediato)</div>
+                <div class="sched-opt-sub">Entre na fila e fale com um médico em minutos</div>
+              </div>
+              <div class="sched-opt-radio"><div class="sched-opt-radio-dot"></div></div>
+            </div>
+            <div class="sched-opt" id="sopt-marcado" onclick="selectSched('marcado')">
+              <div class="sched-opt-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div>
+              <div class="sched-opt-body">
+                <div class="sched-opt-title">Agendar horário</div>
+                <div class="sched-opt-sub">Escolha o dia e a hora da sua consulta</div>
+              </div>
+              <div class="sched-opt-radio"><div class="sched-opt-radio-dot"></div></div>
+            </div>
+          </div>
+          <div id="sched-fields" class="sched-fields hidden">
+            <div class="sf">
+              <label>Data</label>
+              <input type="date" id="sched-date" onchange="checkSched()" oninput="checkSched()" />
+            </div>
+            <div class="sf">
+              <label>Horário</label>
+              <input type="time" id="sched-time" onchange="checkSched()" oninput="checkSched()" />
+            </div>
+          </div>
+          <div id="sched-hint" class="sched-hint hidden"></div>
+        </div>
+
+        <div style="background:#f8fafc;border-radius:10px;padding:12px 14px;display:flex;align-items:flex-start;gap:10px;margin-bottom:24px;margin-top:14px">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#125F39" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <span style="font-size:12px;color:#64748b;line-height:1.5">Independente da modalidade, todos os atestados são assinados digitalmente por médicos brasileiros com CRM ativo e têm validade em todo território nacional.</span>
+        </div>
+
+        <button class="btn-primary" id="btn-s4" onclick="nextStep()">Continuar <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+        <button class="btn-back-sm" onclick="prevStep()"><svg viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>Voltar</button>
+      </div>
+
+      <!-- STEP 5 -->
+      <div id="step-5" class="hidden">
+        <div style="text-align:center;margin-bottom:20px">
+          <h3 style="font-size:20px;font-weight:800;color:#1e293b;margin-bottom:8px">Detalhes do atestado</h3>
+          <p style="font-size:14px;color:#64748b">Informe datas, período e hospital desejado</p>
+        </div>
+
+        <div class="field mb-20">
+          <label>Algo mais que o médico precisa saber? <span style="color:#94a3b8;font-weight:400">(opcional)</span></label>
+          <textarea id="obs" rows="3" placeholder="Ex: estou tomando dipirona, já fui ao pronto-socorro..." style="resize:vertical"></textarea>
+        </div>
+
+        <div class="mb-20">
+          <div class="section-title">Quando começaram os sintomas?</div>
+          <div class="date-pills">
+            <button type="button" class="date-pill" data-val="amanha" onclick="selectDate(this)">Amanhã</button>
+            <button type="button" class="date-pill selected" data-val="hoje" onclick="selectDate(this)">Hoje</button>
+            <button type="button" class="date-pill" data-val="ontem" onclick="selectDate(this)">Ontem</button>
+            <button type="button" class="date-pill" data-val="custom" onclick="selectDate(this)">Personalizado</button>
+          </div>
+          <input type="date" id="date-custom" class="date-input hidden" onchange="onCustomDate(this)" />
+          <div class="info-box teal hidden" id="date-info" style="margin-top:10px">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+            <span id="date-info-text"></span>
+          </div>
+        </div>
+
+        <div class="mb-20">
+          <div class="section-title">Quantos dias de atestado? <span class="req">*</span></div>
+          <div class="days-list">
+            <div class="day-row selected" data-days="1" data-price="29.73" onclick="selectDays(this)"><span class="day-row-lbl">1 dia</span><span class="day-row-price">R$ 29,73</span></div>
+            <div class="day-row" data-days="2" data-price="39.47" onclick="selectDays(this)"><span class="day-row-lbl">2 dias</span><span class="day-row-price">R$ 39,47</span></div>
+            <div class="day-row" data-days="3" data-price="49.19" onclick="selectDays(this)"><span class="day-row-lbl">3 dias</span><span class="day-row-price">R$ 49,19</span></div>
+            <div class="day-row" data-days="5" data-price="59.34" onclick="selectDays(this)"><span class="day-row-lbl">5 dias</span><span class="day-row-price">R$ 59,34</span></div>
+            <div class="day-row" data-days="7" data-price="69.58" onclick="selectDays(this)"><span class="day-row-lbl">7 dias</span><span class="day-row-price">R$ 69,58</span></div>
+            <div class="day-row" data-days="10" data-price="79.23" onclick="selectDays(this)"><span class="day-row-lbl">10 dias</span><span class="day-row-price">R$ 79,23</span></div>
+            <div class="day-row" data-days="15" data-price="89.91" onclick="selectDays(this)"><span class="day-row-lbl">15 dias</span><span class="day-row-price">R$ 89,91</span></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;margin:14px 0 10px">
+            <div style="flex:1;height:1px;background:#e2e8f0"></div>
+            <span style="font-size:11.5px;color:#94a3b8;font-weight:500;white-space:nowrap">ou escolher plano mensal</span>
+            <div style="flex:1;height:1px;background:#e2e8f0"></div>
+          </div>
+          <div id="plan-s5" style="margin-bottom:10px">
+            <div class="upsell-card" style="border-color:#b8dfc9;background:#f4fdf8;">
+              <div class="upsell-header" style="background:linear-gradient(135deg,#0f4f30,#1a7040);color:#fff;padding:11px 14px;">
+                <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                <span style="flex:1">Plano Mensal</span>
+                <span style="background:rgba(255,255,255,.2);color:#fff;font-size:9px;font-weight:800;padding:2px 7px;border-radius:3px;letter-spacing:.3px">MAIS POPULAR</span>
+              </div>
+              <div class="upsell-item" id="up-pacote" onclick="toggleUp('pacote')" style="background:transparent;padding:13px 14px;align-items:flex-start;">
+                <div class="upsell-circle" style="margin-top:2px"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></div>
+                <div class="upsell-body">
+                  <div class="upsell-title">Ativar Plano Mensal</div>
+                  <div class="upsell-desc" style="margin-bottom:8px">Para quem precisa de atestado com frequência. Acompanhamento o mês todo, sem pagar avulso a cada vez.</div>
+                  <div class="plan-mini">
+                    <div class="plan-mini-row"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg><span><b>Até 3 consultas + atestados por semana</b>, durante todo o mês</span></div>
+                    <div class="plan-mini-row"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg><span>Atendimento 24h com médicos de CRM ativo</span></div>
+                    <div class="plan-mini-row"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg><span>Sem fila e sem agendar de novo a cada atestado</span></div>
+                    <div class="plan-mini-row"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg><span>Cancele quando quiser, sem multa</span></div>
+                  </div>
+                </div>
+                <div style="text-align:right;flex-shrink:0;margin-left:10px">
+                  <div style="font-size:15px;font-weight:800;color:#125F39;line-height:1.2">R$&nbsp;229,90</div>
+                  <div style="font-size:10px;color:#888;font-weight:500">/mês</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="info-box yellow" style="margin-top:0">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+            O período final de afastamento será definido pelo médico após a avaliação do seu caso clínico.
+          </div>
+        </div>
+
+        <div class="mb-20">
+          <div class="section-title">Hospital de preferência <span class="req">*</span></div>
+          <div class="hosp-grid">
+            <div class="hosp-btn" data-hosp="sao-camilo" onclick="selectHosp(this)"><div class="hosp-logo"><img src="https://vgqeehfsvsnmxwkenvij.supabase.co/storage/v1/object/public/hospitals/1767654174592-mjtb9j.webp" alt="São Camilo" onerror="this.style.display='none'" /></div><span class="hosp-name">Hospital São Camilo</span></div>
+            <div class="hosp-btn" data-hosp="ubs" onclick="selectHosp(this)"><div class="hosp-logo"><img src="https://vgqeehfsvsnmxwkenvij.supabase.co/storage/v1/object/public/hospitals/1767654132699-6z2eus.jpg" alt="UBS" onerror="this.style.display='none'" /></div><span class="hosp-name">UBS</span></div>
+            <div class="hosp-btn" data-hosp="hapvida" onclick="selectHosp(this)"><div class="hosp-logo"><img src="https://vgqeehfsvsnmxwkenvij.supabase.co/storage/v1/object/public/hospitals/1767654032964-vkuo1e.png" alt="Hapvida" onerror="this.style.display='none'" /></div><span class="hosp-name">Hapvida</span></div>
+            <div class="hosp-btn" data-hosp="unimed" onclick="selectHosp(this)"><div class="hosp-logo"><img src="https://vgqeehfsvsnmxwkenvij.supabase.co/storage/v1/object/public/hospitals/1767653949753-zio9zu.png" alt="Unimed" onerror="this.style.display='none'" /></div><span class="hosp-name">Unimed</span></div>
+            <div class="hosp-btn" data-hosp="sus" onclick="selectHosp(this)"><div class="hosp-logo"><img src="https://vgqeehfsvsnmxwkenvij.supabase.co/storage/v1/object/public/hospitals/1767653090110-ifgfq.png" alt="SUS" onerror="this.style.display='none'" /></div><span class="hosp-name">SUS</span></div>
+            <div class="hosp-btn" data-hosp="upa" onclick="selectHosp(this)"><div class="hosp-logo"><img src="https://vgqeehfsvsnmxwkenvij.supabase.co/storage/v1/object/public/hospitals/1767577226398-g1mlt.jpg" alt="UPA" onerror="this.style.display='none'" /></div><span class="hosp-name">UPA</span></div>
+          </div>
+          <div style="padding-top:14px;margin-top:4px;border-top:1px solid #f1f5f9">
+            <p style="font-size:13px;font-weight:600;color:#555;margin-bottom:8px">Não encontrou o hospital que deseja?</p>
+            <input type="text" id="custom-hosp" placeholder="Escreva o nome do hospital aqui" style="width:100%;padding:12px 16px;border:2px solid #e2e8f0;border-radius:14px;font-size:14px;font-family:inherit;outline:none" />
+          </div>
+        </div>
+
+        <div style="padding-top:20px;border-top:1px solid #f1f5f9">
+          <button class="btn-primary" onclick="nextStep()">Continuar <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+          <button class="btn-back-sm" onclick="prevStep()"><svg viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>Voltar</button>
+        </div>
+      </div>
+
+      <!-- STEP 6 -->
+      <div id="step-6" class="hidden">
+        <div style="text-align:center;margin-bottom:20px">
+          <h3 style="font-size:20px;font-weight:800;color:#1e293b;margin-bottom:8px">Seus dados pessoais</h3>
+          <p style="font-size:14px;color:#64748b">Essas informações serão utilizadas no seu atestado médico</p>
+        </div>
+        <div class="info-box yellow mb-20" style="border-radius:14px">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+          Digite seus dados <strong>exatamente</strong> como devem aparecer no atestado. Confira tudo antes de avançar!
+        </div>
+        <div class="field">
+          <label>CPF <span class="req">*</span></label>
+          <input type="tel" id="cpf" inputmode="numeric" maxlength="14" placeholder="000.000.000-00" oninput="maskCpf(this)" onblur="validateF('cpf')" />
+          <div class="field-msg hidden" id="msg-cpf"></div>
+        </div>
+        <div class="field">
+          <label>Nome Completo <span class="req">*</span></label>
+          <input type="text" id="nome" placeholder="Digite seu nome completo" autocomplete="name" onblur="validateF('nome')" oninput="checkS5()" />
+          <div class="field-msg hidden" id="msg-nome"></div>
+        </div>
+        <div class="field">
+          <label>E-mail <span class="req">*</span></label>
+          <input type="email" id="email" placeholder="seu@email.com" autocomplete="email" onblur="validateF('email')" oninput="checkS5()" />
+          <div class="field-msg hidden" id="msg-email"></div>
+        </div>
+        <div class="field">
+          <label>Telefone <span class="req">*</span></label>
+          <input type="tel" id="tel" inputmode="tel" maxlength="15" placeholder="(11) 99999-9999" oninput="maskTel(this)" onblur="validateF('tel')" />
+          <div class="field-msg hidden" id="msg-tel"></div>
+        </div>
+        <div class="row2">
+          <div class="field">
+            <label>Cidade <span class="req">*</span></label>
+            <input type="text" id="cidade" placeholder="Ex: São Paulo" onblur="validateF('cidade')" oninput="checkS5()" />
+            <div class="field-msg hidden" id="msg-cidade"></div>
+          </div>
+          <div class="field">
+            <label>Estado <span class="req">*</span></label>
+            <select id="estado" onchange="validateF('estado');checkS5()">
+              <option value="">Selecione...</option>
+              <option>AC</option><option>AL</option><option>AP</option><option>AM</option><option>BA</option><option>CE</option><option>DF</option><option>ES</option><option>GO</option><option>MA</option><option>MT</option><option>MS</option><option>MG</option><option>PA</option><option>PB</option><option>PR</option><option>PE</option><option>PI</option><option>RJ</option><option>RN</option><option>RS</option><option>RO</option><option>RR</option><option>SC</option><option>SP</option><option>SE</option><option>TO</option>
+            </select>
+            <div class="field-msg hidden" id="msg-estado"></div>
+          </div>
+        </div>
+        <div style="padding-top:20px;border-top:1px solid #f1f5f9">
+          <button class="btn-primary" id="btn-s6" onclick="tryS5()" disabled>Continuar <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+          <button class="btn-back-sm" onclick="prevStep()"><svg viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>Voltar</button>
+        </div>
+      </div>
+
+      <!-- STEP 7 -->
+      <div id="step-7" class="hidden">
+        <div style="background:linear-gradient(135deg,#e6fff0,#d4f5e9);padding:22px;border-radius:16px;margin-bottom:20px">
+          <h3 style="font-size:21px;font-weight:800;color:#247A3D;margin-bottom:6px" id="greet-name">Olá!</h3>
+          <p style="font-size:14px;color:#555">Estamos quase lá! Confira os detalhes do seu atestado antes de finalizar.</p>
+        </div>
+
+        <div class="upsell-card mb-20">
+          <div class="upsell-header">
+            <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            Adicione ao seu pedido
+          </div>
+          <div class="upsell-item" id="up-cid" onclick="toggleUp('cid')">
+            <div class="upsell-circle"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></div>
+            <div class="upsell-body">
+              <div class="upsell-title"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>Incluir CID no atestado</div>
+              <div class="upsell-desc">Exigido por INSS e perícias. Código CID-10 impresso no documento.</div>
+            </div>
+            <div class="upsell-price">+R$&nbsp;9,47</div>
+          </div>
+          <div class="upsell-item" id="up-qr" onclick="toggleUp('qr')">
+            <div class="upsell-circle"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></div>
+            <div class="upsell-body">
+              <div class="upsell-title"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>QR Code de Verificação</div>
+              <div class="upsell-desc">RH escaneia e confirma autenticidade online em segundos.</div>
+            </div>
+            <div class="upsell-price">+R$&nbsp;9,73</div>
+          </div>
+        </div>
+
+        <div class="mb-20">
+          <h4 style="font-size:13px;font-weight:700;color:#666;margin-bottom:10px;display:flex;align-items:center;gap:6px">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            Prévia do seu Atestado
+          </h4>
+          <div class="cert-preview">
+            <!-- Watermark PRÉVIA -->
+            <div class="cert-watermark">PRÉVIA</div>
+
+            <!-- Cabeçalho da clínica -->
+            <div class="cert-header">
+              <div class="cert-header-logo">
+                <svg viewBox="0 0 24 24"><path d="M9 12h6m-3-3v6"/><rect x="3" y="5" width="18" height="16" rx="2"/></svg>
+              </div>
+              <div class="cert-header-info">
+                <div class="cert-header-name">MedFácil</div>
+                <div class="cert-header-sub">Telemedicina · Clínica Geral</div>
+                <div class="cert-header-crm">Responsável: <span id="cv-doctor">Dr. Rafael Mendes</span> · <span id="cv-crm">CRM/RJ 198.432</span></div>
+              </div>
+              <div class="cert-header-num">
+                Nº <span id="cv-numcert">000000</span><br/>
+                <span id="cv-local-small"></span>
+              </div>
+            </div>
+            <div class="cert-divider"></div>
+
+            <!-- Corpo do documento -->
+            <div class="cert-inner">
+              <h3 class="cert-title">Atestado Médico</h3>
+
+              <p class="cert-body">
+                Atesto, para os devidos fins, a pedido do interessado, que
+                <span class="cert-u" id="cv-nome">________________________</span>,
+                portador(a) do CPF n.º <span class="cert-u" id="cv-cpf">___.___.___-__</span>,
+                foi submetido(a) à consulta médica nesta data, no horário das
+                <span class="cert-u" id="cv-hora">__:__</span>h<span id="cv-cid"></span>.
+              </p>
+
+              <p class="cert-body">
+                Em decorrência do quadro clínico avaliado, necessita de repouso e afastamento
+                de suas atividades laborativas pelo período de
+                <span class="cert-u" id="cv-dias">__</span>
+                (<span id="cv-dias-ext">____</span>) <span id="cv-dias-lbl">dia</span>,
+                a contar da presente data.
+              </p>
+
+              <p class="cert-body" id="cv-local" style="margin-top:14px;font-size:12px"></p>
+
+              <!-- Assinatura + carimbo -->
+              <div class="cert-sig-row">
+                <div class="cert-sig-block">
+                  <div class="cert-sig-line"></div>
+                  <div class="cert-sig-name" id="cv-doctor2">Dr. Rafael Mendes</div>
+                  <div class="cert-sig-esp">Clínica Geral</div>
+                  <div class="cert-sig-crm" id="cv-crm2">CRM/RJ 198.432</div>
+                </div>
+                <div class="cert-stamp">
+                  <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
+                </div>
+              </div>
+            </div>
+
+            <!-- Rodapé -->
+            <div class="cert-footer">
+              <div class="cert-footer-lgpd">
+                Documento emitido em conformidade com a Res. CFM n.º 2.314/2022 e Lei n.º 13.989/2020.<br/>
+                Dados protegidos pela LGPD · CNPJ 64.713.745/0001-80
+              </div>
+              <div class="cert-footer-qr" id="cv-qr-box" style="display:none">QR<br/>CODE</div>
+            </div>
+          </div>
+          <p class="cert-note">Esta é apenas uma prévia ilustrativa. O documento oficial com assinatura digital será enviado após confirmação do pagamento.</p>
+        </div>
+
+        <div class="total-row" style="border-top:1px solid #f0f0f0;border-bottom:1px solid #f0f0f0">
+          <span class="total-label">Total:</span>
+          <span class="total-value" id="total-display">R$ 29,73</span>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:8px;padding:9px 12px;background:#f0faf5;border-radius:8px;margin-top:12px;margin-bottom:12px">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#125F39" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M12 22s-8-4.5-8-11.8A8 8 0 0112 2a8 8 0 018 8.2c0 7.3-8 11.8-8 11.8z"/><circle cx="12" cy="10" r="3"/></svg>
+          <span style="font-size:12px;color:#1a7040;font-weight:600">Emitido por hospitais de <span id="cv-estado">RJ</span> · assinado digitalmente</span>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:10px;padding:11px 14px;border:2px solid #125F39;border-radius:10px;background:rgba(18,95,57,.04);margin-bottom:12px">
+          <div style="width:16px;height:16px;border:2px solid #125F39;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0"><div style="width:7px;height:7px;background:#125F39;border-radius:50%"></div></div>
+          <span style="font-weight:700;font-size:14px;color:#222">Pix</span>
+          <span style="background:#125F39;color:#fff;font-size:9px;font-weight:800;padding:3px 8px;border-radius:4px;margin-left:auto;letter-spacing:.3px">LIBERAÇÃO IMEDIATA</span>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px">
+          <label class="terms-row" onclick="toggleTerm('t1')">
+            <input type="checkbox" id="chk-t1" onclick="event.stopPropagation()" onchange="checkTerms()" />
+            <span>Li e aceito os <a href="/termos-de-uso.html" target="_blank" style="color:#125F39">Termos de Uso</a> e <a href="/politica-privacidade.html" target="_blank" style="color:#125F39">Política de Privacidade</a></span>
+          </label>
+          <label class="terms-row green" onclick="toggleTerm('t2')">
+            <input type="checkbox" id="chk-t2" onclick="event.stopPropagation()" onchange="checkTerms()" />
+            <span>Atendimento por <strong>médicos brasileiros com CRM ativo</strong>. Atestado não aceito = <strong>reembolso integral</strong>.</span>
+          </label>
+        </div>
+
+        <p id="legal-txt" style="font-size:10.5px;color:#aaa;line-height:1.55;text-align:center;padding:0 4px;margin-bottom:16px"></p>
+
+        <div class="nav-row">
+          <button class="btn-prev" onclick="prevStep()">
+            <svg viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+            <div class="btn-prev-txt"><span>Etapa</span><span>Anterior</span></div>
+          </button>
+          <button class="btn-next-nav" id="btn-s7" onclick="nextStep()" disabled>
+            <div class="btn-next-nav-txt"><span>Ir para</span><span>Pagamento</span></div>
+            <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- STEP 8 -->
+      <div id="step-8" class="hidden" style="text-align:center">
+        <div style="margin-bottom:16px">
+          <div style="width:48px;height:48px;border-radius:50%;background:#125F39;display:flex;align-items:center;justify-content:center;margin:0 auto 12px">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h.01M18 14h.01M14 18h.01M18 18h.01M14 16h2M16 14v2"/></svg>
+          </div>
+          <h2 style="font-size:20px;font-weight:800;color:#333;margin-bottom:4px">Pagamento via PIX</h2>
+          <p style="font-size:13px;color:#666">Liberação imediata após confirmação</p>
+        </div>
+
+        <div class="pix-bg">
+          <div class="pix-amount-label">Valor Total</div>
+          <div class="pix-amount" id="pix-total">R$ 29,73</div>
+          <div class="pix-qr-box">
+            <img id="pix-qr" src="" alt="QR Code PIX" style="width:160px;height:160px" />
+          </div>
+          <div class="pix-expiry">⏱️ Este código PIX é válido por 30 minutos</div>
+          <div style="background:#fff;border-radius:8px;padding:12px;text-align:left">
+            <div style="font-size:13px;font-weight:600;color:#555;margin-bottom:8px">Ou copie o código:</div>
+            <div class="pix-copy-area" id="pix-area" onclick="copyPix()">Carregando...</div>
+            <button class="pix-copy-btn" id="pix-btn" onclick="copyPix()">
+              <svg viewBox="0 0 24 24"><path d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2"/><rect x="8" y="8" width="12" height="12" rx="2"/></svg>
+              Copiar Código PIX
+            </button>
+          </div>
+        </div>
+
+        <div style="margin-bottom:14px">
+          <div class="upload-box" id="upload-box" onclick="document.getElementById('file-in').click()">
+            <div class="upload-box-icon"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
+            <h4>Enviar Comprovante</h4>
+            <p>Anexe o comprovante do PIX para liberar seu atestado</p>
+          </div>
+          <div class="upload-status hidden" id="upload-status"></div>
+          <input type="file" id="file-in" accept="image/*,application/pdf" style="display:none" onchange="onUpload(this)" />
+        </div>
+
+        <button class="btn-primary" id="btn-confirm" onclick="confirmPay()" disabled style="margin-bottom:14px">
+          <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          Já fiz o pagamento
+        </button>
+
+        <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:16px">
+          <div style="display:flex;align-items:center;gap:5px;padding:6px 12px;background:#f0fdf4;border-radius:8px;font-size:11px;color:#125F39;font-weight:700">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            100% Seguro
+          </div>
+          <div style="display:flex;align-items:center;gap:5px;padding:6px 12px;background:#f0fdf4;border-radius:8px;font-size:11px;color:#125F39;font-weight:700">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            Liberação Rápida
+          </div>
+        </div>
+
+        <div style="padding-top:14px;border-top:1px solid #f1f5f9;text-align:left">
+          <button class="btn-back-sm" onclick="prevStep()" style="justify-content:flex-start">
+            <svg viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7"/></svg> Voltar
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="badges">
+    <div class="badge"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>Dados Criptografados</div>
+    <div class="badge"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M9 12l2 2 4-4"/></svg>Validade em todo Brasil</div>
+    <div class="badge"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>Emissão em minutos</div>
+  </div>
+</div>
+</main>
+
+<!-- MODAL PLANO MENSAL -->
+<div class="plan-modal hidden" id="modal-plano">
+  <div class="plan-modal-hdr">
+    <div class="plan-modal-hdr-icon">
+      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+    </div>
+    <h2>Plano Mensal Ativado!</h2>
+    <p>Até 3 consultas + atestados por semana · R$&nbsp;229,90/mês</p>
+  </div>
+  <div class="plan-benefits">
+    <div class="plan-benefit"><div class="plan-benefit-check"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></div>Até 3 consultas + atestados por semana, o mês todo</div>
+    <div class="plan-benefit"><div class="plan-benefit-check"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></div>Atestado de hoje já incluso no plano</div>
+    <div class="plan-benefit"><div class="plan-benefit-check"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></div>Atendimento 24h com médicos de CRM ativo</div>
+    <div class="plan-benefit"><div class="plan-benefit-check"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></div>Sem fila e sem agendar de novo a cada atestado</div>
+    <div class="plan-benefit"><div class="plan-benefit-check"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></div>Cancele quando quiser, sem multa</div>
+  </div>
+  <div class="plan-pix-section">
+    <div class="plan-price-label">Valor do Plano Mensal</div>
+    <div class="plan-price-val">R$&nbsp;229,90</div>
+    <div class="plan-price-sub">Cobrado mensalmente · atestado de hoje incluso</div>
+    <div class="pix-bg" style="margin-bottom:14px">
+      <div class="pix-qr-box"><img id="plan-pix-qr" src="" alt="QR Code PIX" style="width:150px;height:150px;display:block" /></div>
+      <div class="pix-expiry">⏱ Código válido por 30 minutos</div>
+      <div style="background:#fff;border-radius:8px;padding:12px;text-align:left">
+        <div style="font-size:12px;font-weight:600;color:#555;margin-bottom:8px">Ou copie o código:</div>
+        <div class="pix-copy-area" id="plan-pix-area" onclick="copyPlanPix()">Carregando...</div>
+        <button class="pix-copy-btn" id="plan-pix-btn" onclick="copyPlanPix()">
+          <svg viewBox="0 0 24 24"><path d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2"/><rect x="8" y="8" width="12" height="12" rx="2"/></svg>
+          Copiar Código PIX
+        </button>
+      </div>
+    </div>
+    <div style="margin-bottom:14px">
+      <div class="upload-box" id="plan-upload-box" onclick="document.getElementById('plan-file-in').click()">
+        <div class="upload-box-icon"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
+        <h4>Enviar Comprovante</h4>
+        <p>Anexe o comprovante do PIX para ativar o plano</p>
+      </div>
+      <div class="upload-status hidden" id="plan-upload-status"></div>
+      <input type="file" id="plan-file-in" accept="image/*,application/pdf" style="display:none" onchange="onPlanUpload(this)" />
+    </div>
+    <button class="btn-primary" id="plan-btn-confirm" onclick="confirmPlanPay()" disabled style="margin-bottom:10px">
+      <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+      Já fiz o pagamento
+    </button>
+    <button onclick="closePlanModal()" style="display:block;width:100%;background:none;border:none;color:#aaa;font-size:12px;cursor:pointer;padding:8px 0;text-align:center">← Voltar e alterar pedido</button>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay hidden" id="modal">
+  <div class="modal-box">
+    <div class="modal-icon"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></div>
+    <h2 class="modal-title">Pedido Confirmado! 🎉</h2>
+    <p class="modal-sub">Seu pagamento está sendo processado</p>
+    <div class="modal-info">
+      <div class="modal-info-title"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M9 12l2 2 4-4"/></svg>Entrega do Atestado</div>
+      <p class="modal-info-body">O PDF do seu atestado médico será enviado para o e-mail cadastrado em <strong>1 a 2 horas</strong> após a confirmação do pagamento.</p>
+      <div class="modal-email-box">📧 <span id="modal-email"></span></div>
+    </div>
+    <p class="modal-note">Verifique também sua caixa de spam. Em caso de dúvidas, entre em contato pelo WhatsApp.</p>
+    <button class="modal-btn" onclick="window.location.href='/'">Entendi, voltar ao início</button>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">
+      <div class="footer-logo-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M9 12h6M9 16h4"/></svg></div>
+      <span class="footer-name">MedFácil</span>
+      <span class="footer-sub">24 Horas</span>
+      <p class="footer-desc">Serviço de telemedicina online com médicos brasileiros.</p>
+    </div>
+    <div class="footer-links">
+      <a href="/termos-de-uso.html">Termos</a><span class="footer-sep">•</span>
+      <a href="/politica-privacidade.html">Privacidade</a><span class="footer-sep">•</span>
+      <a href="/garantia.html">Reembolso</a><span class="footer-sep">•</span>
+      <a href="/empresa.html">Sobre</a>
+    </div>
+    <div class="footer-info">
+      <div>CNPJ: 64.713.745/0001-80</div>
+      <div style="font-size:10px;color:#475569">Rua Santina Figliagi Ceccato, 460 — Bloco A, Apt 73 — Vila Itália — São José do Rio Preto/SP — CEP 15035-180</div>
+      <div class="footer-phone">(17) 3353-3756 · medfacilagora@gmail.com</div>
+    </div>
+    <div class="footer-copy">© 2026 MedFácil Telemedicina. Todos os direitos reservados.</div>
+  </div>
+</footer>
+
+<script>
+const STEP_LABELS  = ['Saúde','Médico','Sintomas','Consulta','Detalhes','Dados','Resumo','Pagar'];
+const STEP_TITLES  = ['Conte sobre sua saúde','Conte sobre sua saúde','Conte sobre sua saúde','Tipo de Atendimento','Quase lá!','Quase lá!','Revise seu pedido','Pagamento'];
+const SYMS = ['Febre','Náusea','Diarreia','Tosse sem catarro','Tosse com catarro','Mal-estar','Fadiga','Pressão arterial elevada','O corpo não pode se mover livremente','Evento estressante na vida','Distúrbio do sono'];
+const CID_MAP = {resfriado:'J06.9',gastroenterite:'A09',coronavirus:'U07.1',estresse:'F43.0',enxaqueca:'G43.9','dor-costas':'M54.5',colica:'N94.6',cistite:'N30.0',outros:'R69'};
+const DIAS_EXT = {1:'um',2:'dois',3:'três',5:'cinco',7:'sete',10:'dez',15:'quinze'};
+const PIX_CODE = '00020126580014BR.GOV.BCB.PIX013664713745000180520400005303986540429.005802BR5919MEDFACIL ONLINE 24H6021SAO JOSE DO RIO PRETO62070503***63040BA2';
+
+// PIX dinâmico (MasterPag). Começam com o placeholder e são substituídos pelo
+// código real quando a cobrança é criada via /api/criar-pix.
+let PIX_PEDIDO = PIX_CODE;
+let PIX_PLANO  = PIX_CODE;
+let _pollTimer = null;
+
+function getCliente(){
+  return {
+    nome: (document.getElementById('nome')?.value || '').trim(),
+    email: (document.getElementById('email')?.value || '').trim(),
+    cpf: (document.getElementById('cpf')?.value || '').replace(/\D/g,''),
+    telefone: (document.getElementById('tel')?.value || '').replace(/\D/g,'')
+  };
+}
+
+// Chama o backend para criar a cobrança PIX real. Retorna {id,qrCode,...} ou null.
+async function criarPix(valorReais, descricao){
+  const cli = getCliente();
+  try{
+    const r = await fetch('/api/criar-pix', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ amount: valorReais, descricao, nome: cli.nome, email: cli.email, cpf: cli.cpf, telefone: cli.telefone })
+    });
+    if(!r.ok) return null;
+    return await r.json();
+  }catch(e){ return null; }
+}
+
+function qrImg(code){ return 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' + encodeURIComponent(code); }
+
+// Polling: consulta /api/status e dispara onPaid quando o PIX é confirmado.
+function iniciarPolling(id, onPaid){
+  if(_pollTimer) clearInterval(_pollTimer);
+  if(!id) return;
+  _pollTimer = setInterval(async ()=>{
+    try{
+      const r = await fetch('/api/status?id=' + encodeURIComponent(id));
+      if(!r.ok) return;
+      const d = await r.json();
+      if(d.status === 'paid'){ clearInterval(_pollTimer); _pollTimer=null; onPaid(); }
+      else if(['failed','expired','refunded'].includes(d.status)){ clearInterval(_pollTimer); _pollTimer=null; }
+    }catch(e){}
+  }, 5000);
+}
+
+// Prepara o pagamento do pedido avulso (step 8)
+async function prepararPagamentoPedido(){
+  const area = document.getElementById('pix-area');
+  area.textContent = 'Gerando cobrança PIX...';
+  const cob = await criarPix(totalPrice(), 'Atestado médico online - MedFácil');
+  if(cob && cob.qrCode){
+    PIX_PEDIDO = cob.qrCode;
+    S.txPedido = cob.id;
+    document.getElementById('pix-qr').src = qrImg(cob.qrCode);
+    area.textContent = cob.qrCode;
+    iniciarPolling(cob.id, ()=>{ if(!S.fileOk){ confirmPay(); } });
+  } else {
+    // Fallback (ex.: rodando no preview local sem /api, ou chaves ainda não configuradas)
+    PIX_PEDIDO = PIX_CODE;
+    document.getElementById('pix-qr').src = qrImg(PIX_CODE);
+    area.textContent = PIX_CODE;
+  }
+}
+
+// Prepara o pagamento do Plano Mensal (modal)
+async function prepararPagamentoPlano(){
+  const area = document.getElementById('plan-pix-area');
+  area.textContent = 'Gerando cobrança PIX...';
+  const cob = await criarPix(229.90, 'Plano Mensal - MedFácil');
+  if(cob && cob.qrCode){
+    PIX_PLANO = cob.qrCode;
+    S.txPlano = cob.id;
+    document.getElementById('plan-pix-qr').src = qrImg(cob.qrCode);
+    area.textContent = cob.qrCode;
+    iniciarPolling(cob.id, ()=>confirmPlanPay());
+  } else {
+    PIX_PLANO = PIX_CODE;
+    document.getElementById('plan-pix-qr').src = qrImg(PIX_CODE);
+    area.textContent = PIX_CODE;
+  }
+}
+
+const S = { step:1, problem:null, diag:null, syms:new Set(), symOther:false, symOtherTxt:'', dateOpt:'hoje', dateVal:'', days:1, price:29.73, hosp:null, addCid:false, addQr:false, addPacote:false, fileOk:false, consulta:'atestado', videoMode:'agora', videoDate:'', videoTime:'' };
+
+// init
+(function(){
+  const now = new Date();
+  S.dateVal = now.toISOString().split('T')[0];
+  renderStepper();
+  renderSyms();
+  showDateInfo();
+  document.getElementById('btn-back-top').style.display = 'none';
+  // QR code
+  document.getElementById('pix-qr').src = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' + encodeURIComponent(PIX_CODE);
+  document.getElementById('pix-area').textContent = PIX_CODE;
+})();
+
+function renderStepper(){
+  const w = document.getElementById('stepper');
+  w.innerHTML = '';
+  STEP_LABELS.forEach((lbl,i)=>{
+    const n=i+1, done=n<S.step, active=n===S.step, cls=done?'done':active?'active':'pending';
+    const d=document.createElement('div'); d.className='step-item';
+    let conn='';
+    if(i<6){ const f=done?'100%':'0%'; conn=`<div class="step-connector"><div class="step-connector-fill" style="width:${f}"></div></div>`; }
+    d.innerHTML=conn+`<div class="step-dot ${cls}">${done?'<svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>':n}</div><span class="step-lbl ${cls}">${lbl}</span>`;
+    w.appendChild(d);
+  });
+}
+
+function renderSyms(){
+  const list=document.getElementById('sym-list'); list.innerHTML='';
+  SYMS.forEach(s=>{
+    const sel=S.syms.has(s), b=document.createElement('button');
+    b.type='button'; b.className='sym-btn'+(sel?' selected':''); b.dataset.s=s;
+    b.innerHTML=`<span>${s}</span><div class="sym-check"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></div>`;
+    b.onclick=()=>{ if(S.syms.has(s)) S.syms.delete(s); else S.syms.add(s); renderSyms(); };
+    list.appendChild(b);
+  });
+  // Outro
+  const ob=document.createElement('button'); ob.type='button';
+  ob.className='sym-btn'+(S.symOther?' selected':'');
+  ob.style.borderStyle=S.symOther?'solid':'dashed';
+  ob.style.background=S.symOther?'#f0fdf4':'#fafafa';
+  ob.innerHTML=`<span>Outro sintoma...</span><div class="sym-check"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></div>`;
+  ob.onclick=()=>{ S.symOther=!S.symOther; renderSyms(); };
+  list.appendChild(ob);
+  if(S.symOther){
+    const ta=document.createElement('textarea');
+    ta.placeholder='Descreva seus outros sintomas aqui...'; ta.value=S.symOtherTxt;
+    ta.style.cssText='width:100%;min-height:80px;border-radius:14px;border:2px solid #e2e8f0;padding:12px;font-size:14px;font-family:inherit;outline:none;resize:vertical;margin-top:8px';
+    ta.oninput=e=>{ S.symOtherTxt=e.target.value; updateSymCount(); };
+    list.appendChild(ta);
+  }
+  updateSymCount();
+}
+
+function updateSymCount(){
+  const n=S.syms.size+(S.symOther&&S.symOtherTxt.trim()?1:0);
+  const el=document.getElementById('sym-count');
+  if(n>0){ el.classList.remove('hidden'); el.textContent='✓ '+n+' sintoma'+(n>1?'s':'')+' selecionado'+(n>1?'s':''); }
+  else el.classList.add('hidden');
+  document.getElementById('btn-s3').disabled = n===0&&!(S.symOther&&S.symOtherTxt.trim());
+}
+
+function selectConsulta(tipo){
+  S.consulta=tipo;
+  document.getElementById('copt-atestado').classList.toggle('selected', tipo==='atestado');
+  document.getElementById('copt-video').classList.toggle('selected', tipo==='video');
+  const sw=document.getElementById('sched-wrap');
+  sw.classList.toggle('hidden', tipo!=='video');
+  if(tipo==='video'){ setTimeout(()=>sw.scrollIntoView({behavior:'smooth',block:'nearest'}),150); }
+  checkSched();
+  updateTotal();
+}
+
+// data local de hoje (YYYY-MM-DD), corrigindo fuso horário
+function localToday(){ const t=new Date(); t.setMinutes(t.getMinutes()-t.getTimezoneOffset()); return t.toISOString().slice(0,10); }
+// hora local atual (HH:MM)
+function localNowHM(){ const t=new Date(); return String(t.getHours()).padStart(2,'0')+':'+String(t.getMinutes()).padStart(2,'0'); }
+
+function selectSched(mode){
+  S.videoMode=mode;
+  document.getElementById('sopt-agora').classList.toggle('selected', mode==='agora');
+  document.getElementById('sopt-marcado').classList.toggle('selected', mode==='marcado');
+  const f=document.getElementById('sched-fields');
+  f.classList.toggle('hidden', mode!=='marcado');
+  if(mode==='marcado'){
+    // recalcula o mínimo a cada abertura (caso a página fique aberta virando o dia)
+    document.getElementById('sched-date').min=localToday();
+    setTimeout(()=>f.scrollIntoView({behavior:'smooth',block:'nearest'}),150);
+  } else {
+    document.getElementById('sched-hint').classList.add('hidden');
+  }
+  checkSched();
+}
+
+function checkSched(){
+  const dEl=document.getElementById('sched-date'), tEl=document.getElementById('sched-time'), hint=document.getElementById('sched-hint');
+  S.videoDate=dEl.value; S.videoTime=tEl.value;
+  let ok=true;
+  // só valida quando é vídeo agendado
+  if(S.consulta==='video' && S.videoMode==='marcado'){
+    const today=localToday();
+    if(!S.videoDate || !S.videoTime){
+      ok=false; hint.className='sched-hint hidden';
+    } else if(S.videoDate<today){
+      ok=false; hint.textContent='A data escolhida já passou. Selecione hoje ou uma data futura.'; hint.className='sched-hint';
+    } else if(S.videoDate===today && S.videoTime<=localNowHM()){
+      ok=false; hint.textContent='Esse horário de hoje já passou. Escolha um horário mais tarde.'; hint.className='sched-hint';
+    } else {
+      const [a,m,d]=S.videoDate.split('-');
+      hint.textContent='Consulta agendada para '+d+'/'+m+'/'+a+' às '+S.videoTime+'.'; hint.className='sched-hint ok';
+    }
+  } else {
+    hint.className='sched-hint hidden';
+  }
+  document.getElementById('btn-s4').disabled=!ok;
+}
+
+function selectProblem(el){
+  document.querySelectorAll('.problem-btn').forEach(b=>b.classList.remove('selected'));
+  el.classList.add('selected');
+  S.problem=el.dataset.val;
+  document.getElementById('btn-s1').disabled=false;
+}
+
+function selectDiag(el){
+  document.querySelectorAll('.opt-btn').forEach(b=>b.classList.remove('selected'));
+  el.classList.add('selected'); S.diag=el.dataset.val;
+  document.getElementById('btn-s2').disabled=false;
+}
+
+function selectDate(el){
+  document.querySelectorAll('.date-pill').forEach(p=>p.classList.remove('selected'));
+  el.classList.add('selected'); S.dateOpt=el.dataset.val;
+  const today=new Date(), custom=document.getElementById('date-custom');
+  if(S.dateOpt==='custom'){ custom.classList.remove('hidden'); return; }
+  custom.classList.add('hidden');
+  const d=new Date(today);
+  if(S.dateOpt==='amanha') d.setDate(d.getDate()+1);
+  if(S.dateOpt==='ontem')  d.setDate(d.getDate()-1);
+  S.dateVal=d.toISOString().split('T')[0];
+  showDateInfo();
+}
+
+function onCustomDate(inp){ S.dateVal=inp.value; showDateInfo(); }
+
+function showDateInfo(){
+  const el=document.getElementById('date-info'), tx=document.getElementById('date-info-text');
+  if(S.dateVal){
+    const d=new Date(S.dateVal+'T12:00:00'); d.setDate(d.getDate()+1);
+    tx.innerHTML='O atestado será válido a partir de <strong>'+d.toLocaleDateString('pt-BR')+'</strong>.';
+    el.classList.remove('hidden');
+  } else el.classList.add('hidden');
+}
+
+function selectDays(el){
+  if(S.addPacote){ S.addPacote=false; document.getElementById('up-pacote').classList.remove('checked'); }
+  document.querySelectorAll('.day-row').forEach(r=>r.classList.remove('selected'));
+  el.classList.add('selected'); S.days=parseInt(el.dataset.days); S.price=parseFloat(el.dataset.price);
+  updateTotal();
+  setTimeout(()=>{ document.getElementById('plan-s5').scrollIntoView({behavior:'smooth',block:'nearest'}); }, 200);
+}
+
+function selectHosp(el){
+  document.querySelectorAll('.hosp-btn').forEach(b=>b.classList.remove('selected'));
+  el.classList.add('selected'); S.hosp=el.dataset.hosp;
+}
+
+function toggleUp(k){
+  const map={cid:'up-cid',qr:'up-qr',pacote:'up-pacote'};
+  if(k==='cid') S.addCid=!S.addCid;
+  if(k==='qr')  S.addQr=!S.addQr;
+  if(k==='pacote'){
+    S.addPacote=!S.addPacote;
+    if(S.addPacote) document.querySelectorAll('.day-row').forEach(r=>r.classList.remove('selected'));
+  }
+  document.getElementById(map[k]).classList.toggle('checked');
+  updateTotal(); updateCert();
+}
+
+function totalPrice(){ const base=S.addPacote?229.90:S.price; return Math.round((base+(S.addCid?9.47:0)+(S.addQr?9.73:0))*100)/100; }
+function fmtPrice(v){ return 'R$ '+v.toFixed(2).replace('.',','); }
+
+function updateTotal(){
+  const t=totalPrice(), f=fmtPrice(t);
+  const td=document.getElementById('total-display'); if(td) td.textContent=f;
+  const pt=document.getElementById('pix-total'); if(pt) pt.textContent=f;
+  const lt=document.getElementById('legal-txt');
+  if(S.addPacote){
+    if(lt) lt.textContent='Ao clicar em "Ir para Pagamento", você ativa o Plano Mensal por R$ 229,90/mês, com até 3 consultas e atestados por semana durante o mês, incluindo o atestado de hoje. O plano pode ser cancelado a qualquer momento. Serviço em conformidade com a Resolução CFM n.º 2.314/2022 e Lei n.º 13.989/2020.';
+  } else {
+    if(lt) lt.textContent='Ao clicar em "Ir para Pagamento", você concorda em pagar o valor de '+f+' pelo atestado médico online via Pix. Seu questionário será avaliado por médicos brasileiros com CRM ativo e, se apropriado, o atestado médico digital será emitido em até 5 minutos após a confirmação do pagamento. Serviço em conformidade com a Resolução CFM n.º 2.314/2022 e Lei n.º 13.989/2020.';
+  }
+}
+
+function toggleTerm(id){ const c=document.getElementById('chk-'+id); c.checked=!c.checked; checkTerms(); }
+function checkTerms(){ document.getElementById('btn-s7').disabled=!(document.getElementById('chk-t1').checked&&document.getElementById('chk-t2').checked); }
+
+function updateCert(){
+  const now=new Date(), h=String(now.getHours()).padStart(2,'0'), m=String(now.getMinutes()).padStart(2,'0');
+  const nome=document.getElementById('nome')?.value.trim()||'', cpf=document.getElementById('cpf')?.value.trim()||'';
+  const cidade=document.getElementById('cidade')?.value.trim()||'', estado=document.getElementById('estado')?.value||'';
+  setText('cv-nome',nome||'________________________');
+  setText('cv-cpf',cpf||'_______________');
+  setText('cv-hora',h+':'+m);
+  setText('cv-dias',String(S.days));
+  setText('cv-dias-ext',DIAS_EXT[S.days]||'____');
+  setText('cv-dias-lbl',S.days===1?'dia':'dias');
+  setText('cv-doctor','Dr. Rafael Mendes');
+  setText('cv-crm','CRM/RJ 198.432');
+  setText('cv-doctor2','Dr. Rafael Mendes');
+  setText('cv-crm2','CRM/RJ 198.432');
+  // certificate number: timestamp-based placeholder
+  const numCert=String(now.getFullYear()).slice(-2)+String(now.getMonth()+1).padStart(2,'0')+String(Math.floor(now.getTime()/1000)%100000).padStart(5,'0');
+  setText('cv-numcert',numCert);
+  const cidEl=document.getElementById('cv-cid');
+  if(cidEl) cidEl.textContent=S.addCid&&S.problem&&CID_MAP[S.problem]?', sendo portador(a) da afecção CID – '+CID_MAP[S.problem]:'';
+  const locEl=document.getElementById('cv-local');
+  const locSmEl=document.getElementById('cv-local-small');
+  const dStr=S.dateVal?new Date(S.dateVal+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'}):'';
+  if(locEl&&cidade&&estado){
+    locEl.innerHTML='<strong>'+cidade+'/'+estado+(dStr?', '+dStr:'')+'</strong>';
+  } else if(locEl) locEl.textContent='';
+  if(locSmEl) locSmEl.textContent=cidade&&estado?(cidade+'/'+estado):'';
+  const estEl=document.getElementById('cv-estado'); if(estEl) estEl.textContent=estado||'RJ';
+  const greet=document.getElementById('greet-name'); if(greet) greet.textContent='Olá, '+(nome.split(' ')[0]||'Paciente')+'!';
+  // QR box visibility
+  const qrBox=document.getElementById('cv-qr-box'); if(qrBox) qrBox.style.display=S.addQr?'flex':'none';
+}
+
+function setText(id,v){ const e=document.getElementById(id); if(e) e.textContent=v; }
+
+// Validation
+function isValidCPF(c){ const n=c.replace(/\D/g,''); if(n.length!==11||/^(\d)\1{10}$/.test(n))return false; let s=0;for(let i=0;i<9;i++)s+=parseInt(n[i])*(10-i);let r=(s*10)%11;if(r===10||r===11)r=0;if(r!==parseInt(n[9]))return false;s=0;for(let i=0;i<10;i++)s+=parseInt(n[i])*(11-i);r=(s*10)%11;if(r===10||r===11)r=0;return r===parseInt(n[10]); }
+function isValidEmail(e){ return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e.trim()); }
+function isValidPhone(p){ const n=p.replace(/\D/g,''); return n.length>=10&&n.length<=11; }
+function isValidName(n){ const p=n.trim().split(/\s+/).filter(x=>x.length>1); return p.length>=2&&n.trim().length>=5; }
+
+function validateF(f){
+  const el=document.getElementById(f), msg=document.getElementById('msg-'+f);
+  if(!el||!msg)return;
+  const v=el.value.trim(); if(!v){ el.className=''; msg.className='field-msg hidden'; checkS5(); return; }
+  let ok=true, err='', ok2='';
+  if(f==='cpf'){    ok=isValidCPF(v);    err=v.replace(/\D/g,'').length<11?'Digite os 11 dígitos do CPF':'CPF inválido. Verifique.'; ok2='CPF válido'; }
+  if(f==='nome'){   ok=isValidName(v);   err='Digite nome e sobrenome completos'; ok2='Nome válido'; }
+  if(f==='email'){  ok=isValidEmail(v);  err='Digite um e-mail válido'; ok2='E-mail válido'; }
+  if(f==='tel'){    ok=isValidPhone(v);  err='Digite um telefone válido com DDD'; ok2='Telefone válido'; }
+  if(f==='cidade'){ ok=v.length>=2;      err='Digite uma cidade válida'; }
+  if(f==='estado'){ ok=v!=='';           err='Selecione o estado'; }
+  el.className=ok?'valid':'invalid';
+  msg.className='field-msg '+(ok?'ok':'err');
+  msg.innerHTML=ok?(ok2?'✓ '+ok2:''):'⚠ '+err;
+  msg.classList.toggle('hidden', ok&&!ok2);
+  checkS5();
+}
+
+function checkS5(){
+  const ok=isValidCPF(document.getElementById('cpf').value)&&isValidName(document.getElementById('nome').value)&&isValidEmail(document.getElementById('email').value)&&isValidPhone(document.getElementById('tel').value)&&document.getElementById('cidade').value.trim().length>=2&&document.getElementById('estado').value!=='';
+  document.getElementById('btn-s6').disabled=!ok;
+}
+
+function tryS5(){ ['cpf','nome','email','tel','cidade','estado'].forEach(validateF); if(!document.getElementById('btn-s6').disabled) nextStep(); }
+
+function maskCpf(el){ let v=el.value.replace(/\D/g,'').substring(0,11); if(v.length>9)v=v.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/,'$1.$2.$3-$4'); else if(v.length>6)v=v.replace(/(\d{3})(\d{3})(\d+)/,'$1.$2.$3'); else if(v.length>3)v=v.replace(/(\d{3})(\d+)/,'$1.$2'); el.value=v; checkS5(); }
+function maskTel(el){ let v=el.value.replace(/\D/g,'').substring(0,11); if(v.length>10)v=v.replace(/(\d{2})(\d{5})(\d{4})/,'($1) $2-$3'); else if(v.length>6)v=v.replace(/(\d{2})(\d{4,5})(\d+)/,'($1) $2-$3'); else if(v.length>2)v=v.replace(/(\d{2})(\d+)/,'($1) $2'); el.value=v; checkS5(); }
+
+function nextStep(){ if(S.step===7&&S.addPacote){ showPlanModal(); return; } if(S.step<8){ S.step++; goShow(); } }
+function prevStep(){ if(S.step>1){ S.step--; goShow(); } else window.location.href='/'; }
+
+function goShow(){
+  for(let i=1;i<=8;i++){ const e=document.getElementById('step-'+i); if(e) e.classList.toggle('hidden',i!==S.step); }
+  renderStepper();
+  document.getElementById('prog-fill').style.width=(S.step/8*100)+'%';
+  document.getElementById('prog-label').textContent='Etapa '+S.step+' de 8';
+  document.getElementById('hdr-title').textContent=STEP_TITLES[S.step-1];
+  document.getElementById('hdr-sub').textContent='Etapa '+S.step+' de 8';
+  document.getElementById('btn-back-top').style.display=S.step===1?'none':'';
+  if(S.step===7){ updateTotal(); updateCert(); document.getElementById('chk-t1').checked=false; document.getElementById('chk-t2').checked=false; document.getElementById('btn-s7').disabled=true; }
+  if(S.step===8){ document.getElementById('btn-confirm').disabled=true; S.fileOk=false; prepararPagamentoPedido(); }
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function showPlanModal(){
+  prepararPagamentoPlano();
+  document.getElementById('plan-upload-box').classList.remove('valid');
+  document.getElementById('plan-upload-status').className='upload-status hidden';
+  document.getElementById('plan-btn-confirm').disabled=true;
+  document.getElementById('modal-plano').classList.remove('hidden');
+  window.scrollTo(0,0);
+}
+function closePlanModal(){ document.getElementById('modal-plano').classList.add('hidden'); }
+function copyPlanPix(){
+  try{ navigator.clipboard.writeText(PIX_PLANO).catch(()=>{}); }catch(e){}
+  const area=document.getElementById('plan-pix-area'),btn=document.getElementById('plan-pix-btn');
+  area.classList.add('copied'); area.textContent='✓ Código copiado!';
+  btn.classList.add('copied'); btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:17px;height:17px"><path d="M5 13l4 4L19 7"/></svg>Código Copiado!';
+  setTimeout(()=>{ area.classList.remove('copied'); area.textContent=PIX_PLANO; btn.classList.remove('copied'); btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:17px;height:17px"><path d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2"/><rect x="8" y="8" width="12" height="12" rx="2"/></svg>Copiar Código PIX'; },3000);
+}
+function onPlanUpload(inp){
+  if(!inp.files[0])return;
+  const box=document.getElementById('plan-upload-box'),st=document.getElementById('plan-upload-status');
+  st.className='upload-status'; st.innerHTML='<svg viewBox="0 0 24 24"><path d="M12 2v8"/></svg>Validando...'; st.classList.remove('hidden');
+  setTimeout(()=>{ box.classList.add('valid'); st.className='upload-status ok'; st.innerHTML='<svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>Comprovante válido!'; document.getElementById('plan-btn-confirm').disabled=false; },1500);
+}
+function confirmPlanPay(){
+  const email=document.getElementById('email')?.value||'';
+  document.getElementById('modal-email').textContent=email;
+  document.getElementById('modal-plano').classList.add('hidden');
+  document.getElementById('modal').classList.remove('hidden');
+}
+
+function copyPix(){
+  try{ navigator.clipboard.writeText(PIX_PEDIDO).catch(()=>{}); }catch(e){}
+  const area=document.getElementById('pix-area'), btn=document.getElementById('pix-btn');
+  area.classList.add('copied'); area.textContent='✓ Código copiado!';
+  btn.classList.add('copied');
+  btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:17px;height:17px"><path d="M5 13l4 4L19 7"/></svg>Código Copiado!';
+  setTimeout(()=>{ area.classList.remove('copied'); area.textContent=PIX_PEDIDO; btn.classList.remove('copied'); btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:17px;height:17px"><path d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2"/><rect x="8" y="8" width="12" height="12" rx="2"/></svg>Copiar Código PIX'; },3000);
+}
+
+function onUpload(inp){
+  if(!inp.files[0])return;
+  const box=document.getElementById('upload-box'), st=document.getElementById('upload-status');
+  st.className='upload-status'; st.innerHTML='<svg viewBox="0 0 24 24"><path d="M12 2v8"/></svg>Validando...'; st.classList.remove('hidden');
+  setTimeout(()=>{
+    S.fileOk=true; box.classList.add('valid');
+    st.className='upload-status ok';
+    st.innerHTML='<svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>Comprovante válido!';
+    document.getElementById('btn-confirm').disabled=false;
+  },1500);
+}
+
+function confirmPay(){
+  const email=document.getElementById('email')?.value||'';
+  document.getElementById('modal-email').textContent=email;
+  document.getElementById('modal').classList.remove('hidden');
+}
+</script>
+</body>
+</html>
