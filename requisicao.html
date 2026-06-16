@@ -1068,11 +1068,20 @@ async function prepararPagamentoPedido(){
     area.textContent = cob.qrCode;
     iniciarPolling(cob.id, ()=>{ if(!S.fileOk){ confirmPay(); } });
   } else {
-    // Fallback (ex.: rodando no preview local sem /api, ou chaves ainda não configuradas)
-    PIX_PEDIDO = PIX_CODE;
-    document.getElementById('pix-qr').src = qrImg(PIX_CODE);
-    area.textContent = PIX_CODE;
+    pixErro('pedido');
   }
+}
+
+// Mostra erro claro (em vez de um PIX falso) quando a cobrança não pôde ser criada.
+function pixErro(tipo){
+  const isPlano = tipo==='plano';
+  const area = document.getElementById(isPlano ? 'plan-pix-area' : 'pix-area');
+  const qr   = document.getElementById(isPlano ? 'plan-pix-qr' : 'pix-qr');
+  if(isPlano){ PIX_PLANO=''; } else { PIX_PEDIDO=''; }
+  if(qr){ qr.removeAttribute('src'); qr.alt='PIX indisponível'; }
+  area.innerHTML = '<span style="color:#b91c1c;font-weight:600">Não foi possível gerar o PIX agora.</span> '
+    + '<a href="#" onclick="event.preventDefault();event.stopPropagation();' + (isPlano?'prepararPagamentoPlano()':'prepararPagamentoPedido()') + '" style="color:#125F39;font-weight:700;text-decoration:underline">Tentar novamente</a>';
+  console.error('[PIX] Falha ao gerar a cobrança. Verifique: (1) o site está na Vercel com a rota /api ativa, e (2) as variáveis MASTERPAG_PUBLIC_KEY / MASTERPAG_SECRET_KEY configuradas. No preview local (server.ps1) o /api não roda — é esperado dar erro aqui.');
 }
 
 // Prepara o pagamento do Plano Mensal (modal)
@@ -1087,9 +1096,7 @@ async function prepararPagamentoPlano(){
     area.textContent = cob.qrCode;
     iniciarPolling(cob.id, ()=>confirmPlanPay());
   } else {
-    PIX_PLANO = PIX_CODE;
-    document.getElementById('plan-pix-qr').src = qrImg(PIX_CODE);
-    area.textContent = PIX_CODE;
+    pixErro('plano');
   }
 }
 
