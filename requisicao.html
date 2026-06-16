@@ -243,6 +243,16 @@
     .pix-amount { font-size: 28px; font-weight: 800; color: #125F39; margin-bottom: 14px; }
     .pix-qr-box { background: #fff; padding: 12px; border-radius: 10px; display: inline-block; margin-bottom: 10px; }
     .pix-qr-box img { width: 160px; height: 160px; display: block; }
+    .pix-loader { display: none; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 38px 20px; }
+    .pix-loader.show { display: flex; }
+    .pix-loader-ring { position: relative; width: 86px; height: 86px; display: flex; align-items: center; justify-content: center; }
+    .pix-loader-ring::before { content: ''; position: absolute; inset: 0; border-radius: 50%; border: 3px solid #d6f3ee; border-top-color: #32BCAD; animation: pixspin .85s linear infinite; }
+    @keyframes pixspin { to { transform: rotate(360deg); } }
+    .pix-loader-logo { width: 42px; height: 42px; fill: #32BCAD; }
+    .pix-loader-title { font-size: 14.5px; font-weight: 800; color: #0f5c32; }
+    .pix-loader-sub { font-size: 12px; color: #94a3b8; margin-top: -8px; }
+    .pix-loader-dots::after { content: ''; animation: pixdots 1.2s steps(4,end) infinite; }
+    @keyframes pixdots { 0%{content:''} 25%{content:'.'} 50%{content:'..'} 75%{content:'...'} }
     .pix-expiry { font-size: 11px; color: #666; margin-bottom: 14px; }
     .pix-copy-area { background: #f0f0f0; border: 2px dashed #ccc; border-radius: 8px; padding: 10px; margin-bottom: 10px; font-family: monospace; font-size: 11px; color: #333; word-break: break-all; text-align: left; max-height: 70px; overflow-y: auto; line-height: 1.4; cursor: pointer; user-select: all; -webkit-user-select: all; transition: all .2s; }
     .pix-copy-area.copied { background: #d4edda; border-color: #28a745; color: #155724; border-style: solid; }
@@ -856,17 +866,26 @@
         <div class="pix-bg">
           <div class="pix-amount-label">Valor Total</div>
           <div class="pix-amount" id="pix-total">R$ 29,73</div>
-          <div class="pix-qr-box">
-            <img id="pix-qr" src="" alt="QR Code PIX" style="width:160px;height:160px" />
+          <div class="pix-loader" id="pix-loader">
+            <div class="pix-loader-ring">
+              <svg class="pix-loader-logo" viewBox="-12 -12 536 536"><path d="M242.4 292.5C247.8 287.1 257.1 287.1 262.5 292.5L339.5 369.5C353.7 383.7 372.6 391.5 392.6 391.5H407.7L310.6 488.6C280.3 518.1 231.1 518.1 200.8 488.6L103.3 391.2H112.6C132.6 391.2 151.5 383.4 165.7 369.2L242.4 292.5zM262.5 218.9C257.1 224.3 247.8 224.3 242.4 218.9L165.7 142.2C151.5 127.1 132.6 120.2 112.6 120.2H103.3L200.8 22.76C231.1-7.586 280.3-7.586 310.6 22.76L407.8 119.9H392.6C372.6 119.9 353.7 127.7 339.5 141.9L262.5 218.9zM112.6 142.7C126.4 142.7 139.1 148.3 149.7 158.1L226.4 234.8C233.6 241.1 243 245.6 252.5 245.6C261.9 245.6 271.3 241.1 278.5 234.8L355.5 157.8C365.3 148.1 378.8 142.5 392.6 142.5H430.3L488.6 200.8C518.1 231.1 518.1 280.3 488.6 310.6L430.3 368.9H392.6C378.8 368.9 365.3 363.3 355.5 353.5L278.5 276.5C264.6 262.6 240.4 262.6 226.4 276.6L149.7 353.3C139.1 363.1 126.4 368.7 112.6 368.7H78.78L22.76 312.7C-7.586 282.3-7.586 233.1 22.76 202.8L78.78 146.8H112.6z"/></svg>
+            </div>
+            <div class="pix-loader-title"><span class="pix-loader-dots">Gerando seu código PIX</span></div>
+            <div class="pix-loader-sub">Aguarde, é rapidinho</div>
           </div>
-          <div class="pix-expiry">⏱️ Este código PIX é válido por 30 minutos</div>
-          <div style="background:#fff;border-radius:8px;padding:12px;text-align:left">
-            <div style="font-size:13px;font-weight:600;color:#555;margin-bottom:8px">Ou copie o código:</div>
-            <div class="pix-copy-area" id="pix-area" onclick="copyPix()">Carregando...</div>
-            <button class="pix-copy-btn" id="pix-btn" onclick="copyPix()">
-              <svg viewBox="0 0 24 24"><path d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2"/><rect x="8" y="8" width="12" height="12" rx="2"/></svg>
-              Copiar Código PIX
-            </button>
+          <div id="pix-content">
+            <div class="pix-qr-box">
+              <img id="pix-qr" src="" alt="QR Code PIX" style="width:160px;height:160px" />
+            </div>
+            <div class="pix-expiry">⏱️ Este código PIX é válido por 30 minutos</div>
+            <div style="background:#fff;border-radius:8px;padding:12px;text-align:left">
+              <div style="font-size:13px;font-weight:600;color:#555;margin-bottom:8px">Ou copie o código:</div>
+              <div class="pix-copy-area" id="pix-area" onclick="copyPix()">Carregando...</div>
+              <button class="pix-copy-btn" id="pix-btn" onclick="copyPix()">
+                <svg viewBox="0 0 24 24"><path d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2"/><rect x="8" y="8" width="12" height="12" rx="2"/></svg>
+                Copiar Código PIX
+              </button>
+            </div>
           </div>
         </div>
 
@@ -935,15 +954,24 @@
     <div class="plan-price-val">R$&nbsp;229,90</div>
     <div class="plan-price-sub">Cobrado mensalmente · atestado de hoje incluso</div>
     <div class="pix-bg" style="margin-bottom:14px">
-      <div class="pix-qr-box"><img id="plan-pix-qr" src="" alt="QR Code PIX" style="width:150px;height:150px;display:block" /></div>
-      <div class="pix-expiry">⏱ Código válido por 30 minutos</div>
-      <div style="background:#fff;border-radius:8px;padding:12px;text-align:left">
-        <div style="font-size:12px;font-weight:600;color:#555;margin-bottom:8px">Ou copie o código:</div>
-        <div class="pix-copy-area" id="plan-pix-area" onclick="copyPlanPix()">Carregando...</div>
-        <button class="pix-copy-btn" id="plan-pix-btn" onclick="copyPlanPix()">
-          <svg viewBox="0 0 24 24"><path d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2"/><rect x="8" y="8" width="12" height="12" rx="2"/></svg>
-          Copiar Código PIX
-        </button>
+      <div class="pix-loader" id="plan-pix-loader">
+        <div class="pix-loader-ring">
+          <svg class="pix-loader-logo" viewBox="-12 -12 536 536"><path d="M242.4 292.5C247.8 287.1 257.1 287.1 262.5 292.5L339.5 369.5C353.7 383.7 372.6 391.5 392.6 391.5H407.7L310.6 488.6C280.3 518.1 231.1 518.1 200.8 488.6L103.3 391.2H112.6C132.6 391.2 151.5 383.4 165.7 369.2L242.4 292.5zM262.5 218.9C257.1 224.3 247.8 224.3 242.4 218.9L165.7 142.2C151.5 127.1 132.6 120.2 112.6 120.2H103.3L200.8 22.76C231.1-7.586 280.3-7.586 310.6 22.76L407.8 119.9H392.6C372.6 119.9 353.7 127.7 339.5 141.9L262.5 218.9zM112.6 142.7C126.4 142.7 139.1 148.3 149.7 158.1L226.4 234.8C233.6 241.1 243 245.6 252.5 245.6C261.9 245.6 271.3 241.1 278.5 234.8L355.5 157.8C365.3 148.1 378.8 142.5 392.6 142.5H430.3L488.6 200.8C518.1 231.1 518.1 280.3 488.6 310.6L430.3 368.9H392.6C378.8 368.9 365.3 363.3 355.5 353.5L278.5 276.5C264.6 262.6 240.4 262.6 226.4 276.6L149.7 353.3C139.1 363.1 126.4 368.7 112.6 368.7H78.78L22.76 312.7C-7.586 282.3-7.586 233.1 22.76 202.8L78.78 146.8H112.6z"/></svg>
+        </div>
+        <div class="pix-loader-title"><span class="pix-loader-dots">Gerando seu código PIX</span></div>
+        <div class="pix-loader-sub">Aguarde, é rapidinho</div>
+      </div>
+      <div id="plan-pix-content">
+        <div class="pix-qr-box"><img id="plan-pix-qr" src="" alt="QR Code PIX" style="width:150px;height:150px;display:block" /></div>
+        <div class="pix-expiry">⏱ Código válido por 30 minutos</div>
+        <div style="background:#fff;border-radius:8px;padding:12px;text-align:left">
+          <div style="font-size:12px;font-weight:600;color:#555;margin-bottom:8px">Ou copie o código:</div>
+          <div class="pix-copy-area" id="plan-pix-area" onclick="copyPlanPix()">Carregando...</div>
+          <button class="pix-copy-btn" id="plan-pix-btn" onclick="copyPlanPix()">
+            <svg viewBox="0 0 24 24"><path d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2"/><rect x="8" y="8" width="12" height="12" rx="2"/></svg>
+            Copiar Código PIX
+          </button>
+        </div>
       </div>
     </div>
     <div style="margin-bottom:14px">
@@ -1056,11 +1084,21 @@ function iniciarPolling(id, onPaid){
   }, 5000);
 }
 
+// Mostra/esconde a tela de carregamento do PIX
+function pixLoading(tipo, on){
+  const isPlano = tipo==='plano';
+  const loader = document.getElementById(isPlano ? 'plan-pix-loader' : 'pix-loader');
+  const content = document.getElementById(isPlano ? 'plan-pix-content' : 'pix-content');
+  if(loader) loader.classList.toggle('show', on);
+  if(content) content.style.display = on ? 'none' : '';
+}
+
 // Prepara o pagamento do pedido avulso (step 8)
 async function prepararPagamentoPedido(){
+  pixLoading('pedido', true);
   const area = document.getElementById('pix-area');
-  area.textContent = 'Gerando cobrança PIX...';
   const cob = await criarPix(totalPrice(), 'Atestado médico online - MedFácil');
+  pixLoading('pedido', false);
   if(cob && cob.qrCode){
     PIX_PEDIDO = cob.qrCode;
     S.txPedido = cob.id;
@@ -1086,9 +1124,10 @@ function pixErro(tipo){
 
 // Prepara o pagamento do Plano Mensal (modal)
 async function prepararPagamentoPlano(){
+  pixLoading('plano', true);
   const area = document.getElementById('plan-pix-area');
-  area.textContent = 'Gerando cobrança PIX...';
   const cob = await criarPix(229.90, 'Plano Mensal - MedFácil');
+  pixLoading('plano', false);
   if(cob && cob.qrCode){
     PIX_PLANO = cob.qrCode;
     S.txPlano = cob.id;
