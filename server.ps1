@@ -1,5 +1,5 @@
 $root = "C:\Users\vv\Desktop\atestado"
-$port = 3000
+$port = if ($env:PORT) { [int]$env:PORT } else { 3030 }
 $listener = [System.Net.HttpListener]::new()
 $listener.Prefixes.Add("http://localhost:$port/")
 $listener.Start()
