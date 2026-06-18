@@ -104,7 +104,8 @@ async function initDatabase() {
 // 📁 CONFIGURAÇÃO DE UPLOADS DE COMPROVANTES (Vercel Blob / Local)
 // ============================================================
 const UPLOADS_DIR = path.join(__dirname, 'uploads');
-if (!fs.existsSync(UPLOADS_DIR)) fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+// Só cria a pasta local se não estiver na Vercel (filesystem somente leitura)
+if (!process.env.VERCEL && !fs.existsSync(UPLOADS_DIR)) fs.mkdirSync(UPLOADS_DIR, { recursive: true });
 
 const useVercelBlob = !!process.env.BLOB_READ_WRITE_TOKEN;
 
@@ -977,7 +978,14 @@ app.use((req, res) => {
 // ============================================================
 // 🚀 INICIALIZAÇÃO
 // ============================================================
-initDatabase().then(() => {
+// Inicializa o banco de dados (sem bloquear o export)
+initDatabase().catch(err => console.error('❌ [DB] Falha ao inicializar:', err.message));
+
+// Vercel: exporta o app como handler serverless
+// Local: sobe o servidor normalmente
+if (process.env.VERCEL) {
+  module.exports = app;
+} else {
   app.listen(PORT, () => {
     console.log(`✅ Servidor rodando em http://localhost:${PORT}`);
     console.log(`🛡️  Sistema de proteção ativo`);
@@ -985,4 +993,4 @@ initDatabase().then(() => {
     console.log(`📊  Painel admin: http://localhost:${PORT}/admin`);
     console.log(`    (Usuário: admin | Senha: ${ADMIN_PASSWORD})`);
   });
-});
+}
