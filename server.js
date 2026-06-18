@@ -798,12 +798,17 @@ app.get('/admin', (req, res) => {
   res.sendFile(path.join(__dirname, 'admin.html'));
 });
 
-// Servir arquivos estáticos do painel (CSS, JS) com autenticação
-app.get(['/admin.js', '/admin.css'], (req, res) => {
+// Servir CSS do admin publicamente (apenas estilos, sem dados sensíveis)
+app.get('/admin.css', (req, res) => {
+  res.sendFile(path.join(__dirname, 'admin.css'));
+});
+
+// Servir JS do admin com autenticação
+app.get('/admin.js', (req, res) => {
   if (!checkAdminAuth(req)) {
     return res.status(401).send('Não autorizado');
   }
-  res.sendFile(path.join(__dirname, req.path.slice(1)));
+  res.sendFile(path.join(__dirname, 'admin.js'));
 });
 
 // ============================================================

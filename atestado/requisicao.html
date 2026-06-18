@@ -990,7 +990,7 @@
         </div>
       </div>
     </div>
-    <div style="margin-bottom:14px">
+    <div style="margin-bottom:14px" id="plan-upload-section" style="display:none">
       <div class="upload-box" id="plan-upload-box" onclick="document.getElementById('plan-file-in').click()">
         <div class="upload-box-icon"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
         <h4>Enviar Comprovante</h4>
@@ -999,7 +999,7 @@
       <div class="upload-status hidden" id="plan-upload-status"></div>
       <input type="file" id="plan-file-in" accept="image/*,application/pdf" style="display:none" onchange="onPlanUpload(this)" />
     </div>
-    <button class="btn-primary" id="plan-btn-confirm" onclick="confirmPlanPay()" disabled style="margin-bottom:10px">
+    <button class="btn-primary" id="plan-btn-confirm" onclick="revelarUploadPlano()" style="margin-bottom:10px">
       <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
       Já fiz o pagamento
     </button>
@@ -1500,6 +1500,18 @@ function revelarUpload(){
   sec.style.display = 'block';
   // Rola suavemente até a seção de upload
   setTimeout(() => sec.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
+}
+
+// Exibe o upload do comprovante do plano ao clicar "Já fiz o pagamento"
+function revelarUploadPlano(){
+  const sec = document.getElementById('plan-upload-section');
+  const btn = document.getElementById('plan-btn-confirm');
+  if(sec){
+    sec.style.display = 'block';
+    setTimeout(() => sec.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
+  }
+  // Esconde o botão "Já fiz o pagamento" para não repetir
+  if(btn) btn.style.display = 'none';
 }
 
 function onUpload(inp){
