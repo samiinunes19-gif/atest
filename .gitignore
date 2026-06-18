@@ -1,7 +1,10 @@
 # Dependências
 node_modules/
 
-# Variáveis de ambiente (NUNCA versionar chaves)
+# Uploads de Comprovantes (Importante: nunca subir para o GitHub!)
+uploads/
+
+# Variáveis de ambiente (Segurança)
 .env
 .env.local
 .env*.local
@@ -9,22 +12,13 @@ node_modules/
 # Vercel
 .vercel
 
-# Projeto Next.js separado (NÃO faz parte do deploy estático)
-nextjs_space/
-
-# Backups e arquivos compactados
+# Arquivos locais e backups
 *.zip
-
-# Config local do preview / ferramentas
-.claude/
-.project_instructions.md
-
-# Imagens originais não otimizadas (mantidas só localmente)
-foto1.png
-foto3.png
-*.bak
-
-# Logs e SO
+atestado/atestado24h_backup_completo.zip
+atestado/nextjs_space/
+atestado/.claude/
+atestado/foto1.png
+atestado/foto3.png
 *.log
 .DS_Store
 Thumbs.db

@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Painel Administrativo – Sistema de Proteção</title>
+  <meta name="description" content="Painel de monitoramento em tempo real do sistema de proteção web." />
+  <meta name="robots" content="noindex, nofollow" />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <!-- Chart.js via CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+  <link rel="stylesheet" href="/admin.css" />
+</head>
+<body>
+  <!-- BACKGROUND ANIMADO -->
+  <div class="bg-grid" aria-hidden="true"></div>
+  <div class="bg-orb orb-1" aria-hidden="true"></div>
+  <div class="bg-orb orb-2" aria-hidden="true"></div>
+
+  <!-- HEADER -->
+  <header class="header" role="banner">
+    <div class="header-inner">
+      <div class="header-logo">
+        <div class="logo-icon" aria-hidden="true">🛡️</div>
+        <div>
+          <h1 class="header-title">Painel de Proteção</h1>
+          <p class="header-subtitle">Monitoramento em Tempo Real</p>
+        </div>
+      </div>
+      <div class="header-status">
+        <div class="status-dot" id="status-dot" title="Status da conexão SSE"></div>
+        <span class="status-text" id="status-text">Conectando…</span>
+        <div class="header-time" id="header-time">--:--:--</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTEÚDO PRINCIPAL -->
+  <main class="main" role="main">
+
+    <!-- CARDS DE ESTATÍSTICAS -->
+    <section class="stats-grid" aria-label="Estatísticas gerais">
+      <div class="stat-card" id="card-total">
+        <div class="stat-icon">📋</div>
+        <div class="stat-body">
+          <div class="stat-value" id="stat-total">0</div>
+          <div class="stat-label">Total de Acessos</div>
+        </div>
+        <div class="stat-trend" id="trend-total"></div>
+      </div>
+      <div class="stat-card card-authorized" id="card-authorized">
+        <div class="stat-icon">✅</div>
+        <div class="stat-body">
+          <div class="stat-value" id="stat-authorized">0</div>
+          <div class="stat-label">Autorizados</div>
+        </div>
+        <div class="stat-badge badge-success">Permitido</div>
+      </div>
+      <div class="stat-card card-blocked" id="card-blocked">
+        <div class="stat-icon">🚫</div>
+        <div class="stat-body">
+          <div class="stat-value" id="stat-blocked">0</div>
+          <div class="stat-label">Bloqueados</div>
+        </div>
+        <div class="stat-badge badge-danger">Bloqueado</div>
+      </div>
+      <div class="stat-card card-rate" id="card-rate">
+        <div class="stat-icon">📊</div>
+        <div class="stat-body">
+          <div class="stat-value" id="stat-rate">0%</div>
+          <div class="stat-label">Taxa de Bloqueio</div>
+        </div>
+        <div class="stat-trend" id="trend-rate"></div>
+      </div>
+      <!-- Card de receita PIX -->
+      <div class="stat-card card-pix" id="card-pix">
+        <div class="stat-icon">💰</div>
+        <div class="stat-body">
+          <div class="stat-value" id="stat-pix-total">R$ 0</div>
+          <div class="stat-label">Receita PIX Confirmada</div>
+        </div>
+        <div class="stat-badge badge-pix" id="badge-pix-count">0 transações</div>
+      </div>
+    </section>
+
+    <!-- GRÁFICOS -->
+    <section class="charts-grid" aria-label="Gráficos de análise">
+      <!-- Gráfico de barras: acessos por hora -->
+      <div class="chart-card chart-wide">
+        <div class="chart-header">
+          <h2 class="chart-title">
+            <span class="chart-icon">📈</span>
+            Acessos por Hora (últimas 24h)
+          </h2>
+          <div class="chart-legend-inline">
+            <span class="legend-item legend-authorized">Autorizados</span>
+            <span class="legend-item legend-blocked">Bloqueados</span>
+          </div>
+        </div>
+        <div class="chart-body">
+          <canvas id="chart-hours" role="img" aria-label="Gráfico de barras: acessos por hora"></canvas>
+        </div>
+      </div>
+
+      <!-- Gráfico de pizza: motivos de bloqueio -->
+      <div class="chart-card">
+        <div class="chart-header">
+          <h2 class="chart-title">
+            <span class="chart-icon">🎯</span>
+            Motivos de Bloqueio
+          </h2>
+        </div>
+        <div class="chart-body chart-pie-body">
+          <canvas id="chart-reasons" role="img" aria-label="Gráfico de pizza: motivos de bloqueio"></canvas>
+        </div>
+        <div class="chart-legend" id="legend-reasons"></div>
+      </div>
+
+      <!-- Gráfico de linha: atividade nos últimos 10 min -->
+      <div class="chart-card">
+        <div class="chart-header">
+          <h2 class="chart-title">
+            <span class="chart-icon">⚡</span>
+            Atividade Recente (10 min)
+          </h2>
+        </div>
+        <div class="chart-body">
+          <canvas id="chart-activity" role="img" aria-label="Gráfico de linha: atividade recente"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- TABELA DE LOGS -->
+    <section class="table-section" aria-label="Tabela de logs de acesso">
+      <div class="table-header">
+        <div class="table-title-group">
+          <h2 class="table-title">
+            <span class="chart-icon">📋</span>
+            Log de Acessos
+          </h2>
+          <div class="table-live-badge">
+            <span class="pulse-dot"></span>
+            LIVE
+          </div>
+        </div>
+        <div class="table-controls">
+          <div class="search-wrapper">
+            <span class="search-icon">🔍</span>
+            <input
+              type="search"
+              id="search-input"
+              class="search-input"
+              placeholder="Filtrar por IP, país, motivo…"
+              aria-label="Filtrar logs"
+            />
+          </div>
+          <select id="filter-result" class="filter-select" aria-label="Filtrar por resultado">
+            <option value="">Todos</option>
+            <option value="autorizado">Autorizados</option>
+            <option value="bloqueado">Bloqueados</option>
+          </select>
+          <button id="btn-clear-filter" class="btn-ghost" title="Limpar filtros">✕ Limpar</button>
+          <button id="btn-export" class="btn-export" title="Exportar CSV">⬇ Exportar CSV</button>
+        </div>
+      </div>
+
+      <div class="table-wrapper" role="region" aria-label="Registros de acesso" tabindex="0">
+        <table class="access-table" id="log-table">
+          <thead>
+            <tr>
+              <th scope="col" data-sort="timestamp">Horário <span class="sort-icon">↕</span></th>
+              <th scope="col" data-sort="ip">IP</th>
+              <th scope="col" data-sort="pais">País</th>
+              <th scope="col" data-sort="path">Rota</th>
+              <th scope="col" data-sort="cookie">Cookie</th>
+              <th scope="col" data-sort="resultado">Resultado</th>
+              <th scope="col" data-sort="motivo">Motivo</th>
+            </tr>
+          </thead>
+          <tbody id="log-tbody">
+            <tr class="empty-row">
+              <td colspan="7">
+                <div class="empty-state">
+                  <div class="empty-icon">📡</div>
+                  <div>Aguardando dados…</div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="table-footer">
+        <span id="table-count">0 registros exibidos</span>
+        <div class="pagination" id="pagination"></div>
+      </div>
+    </section>
+
+    <!-- SEÇÃO DE TRANSAÇÕES PIX -->
+    <section class="table-section" id="section-transacoes" aria-label="Transações PIX">
+      <div class="table-header">
+        <div class="table-title-group">
+          <h2 class="table-title">
+            <span class="chart-icon">💳</span>
+            Transações PIX com Comprovante
+          </h2>
+          <div class="table-live-badge" style="background:rgba(34,197,94,.15);color:#22c55e">
+            <span class="pulse-dot" style="background:#22c55e"></span>
+            PAGAMENTOS
+          </div>
+        </div>
+        <div class="table-controls">
+          <button id="btn-refresh-tx" class="btn-ghost" title="Atualizar transações">🔄 Atualizar</button>
+        </div>
+      </div>
+
+      <div id="tx-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;padding:8px 0">
+        <div class="empty-state" style="grid-column:1/-1;padding:40px">
+          <div class="empty-icon">💳</div>
+          <div>Nenhuma transação ainda…</div>
+        </div>
+      </div>
+
+      <div class="table-footer">
+        <span id="tx-count">0 transações</span>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL VISUALIZADOR DE COMPROVANTE -->
+  <div id="comp-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;padding:20px" onclick="fecharModalComp()">
+    <div style="max-width:90vw;max-height:90vh;position:relative" onclick="event.stopPropagation()">
+      <button onclick="fecharModalComp()" style="position:absolute;top:-14px;right:-14px;width:32px;height:32px;border-radius:50%;background:#ef4444;color:#fff;border:none;cursor:pointer;font-size:18px;line-height:1;z-index:1">✕</button>
+      <img id="comp-modal-img" src="" alt="Comprovante" style="max-width:85vw;max-height:85vh;border-radius:12px;display:block" />
+      <iframe id="comp-modal-pdf" src="" style="width:80vw;height:80vh;border-radius:12px;display:none;border:none"></iframe>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div class="toast-container" id="toast-container" aria-live="polite"></div>
+
+  <script src="/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "server.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/tracker.js",
+      "dest": "tracker.js"
+    },
+    {
+      "src": "/admin/uploads/(.*)",
+      "status": 404,
+      "dest": "white-page.html"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "server.js"
+    }
+  ]
+}

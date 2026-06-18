@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Consulta Médica Online com CRM ativo | MedFácil</title>
+  <meta name="description" content="Consulta médica online com médico de CRM ativo. R$ 29 via PIX, atendimento 24h, sem fila e sem sair de casa. Após a avaliação clínica, o atestado é emitido quando houver indicação." />
+  <link rel="icon" type="image/png" href="logo.png" />
+  <link rel="apple-touch-icon" href="logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: #fff;
+      color: #1e293b;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    :root {
+      --green:    #059669;
+      --green-d:  #047857;
+      --green-dd: #065f46;
+      --green-l:  #ecfdf5;
+      --green-b:  #6ee7b7;
+      --text:     #1e293b;
+      --text-2:   #334155;
+      --text-3:   #475569;
+      --slate-l:  #f8fafc;
+      --border:   #e2e8f0;
+    }
+
+    a { text-decoration: none; color: inherit; }
+    img { display: block; max-width: 100%; }
+
+    /* ──────────────────────── HEADER */
+    .header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(255,255,255,.97);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      height: 52px; display: flex; align-items: center;
+    }
+    .header__inner {
+      width: 100%; max-width: 480px; margin: 0 auto;
+      padding: 0 16px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .logo { display: flex; align-items: center; gap: 8px; }
+    .logo__icon {
+      width: 36px; height: 36px; border-radius: 8px; overflow: hidden;
+      background: var(--green); display: flex; align-items: center; justify-content: center;
+    }
+    .logo__icon img { width: 100%; height: 100%; object-fit: contain; background: #fff; }
+    .logo__icon svg { width: 18px; height: 18px; stroke: #fff; fill: none; }
+    .logo__text { font-weight: 800; font-size: 13px; color: var(--text); letter-spacing: .06em; text-transform: uppercase; }
+    .btn-header {
+      background: var(--green); color: #fff;
+      font-weight: 700; font-size: 13px;
+      padding: 9px 18px; border-radius: 999px; border: none; cursor: pointer;
+      box-shadow: 0 2px 10px rgba(5,150,105,.4);
+      transition: background .15s;
+    }
+    .btn-header:hover { background: var(--green-d); }
+
+    /* ──────────────────────── HERO */
+    .hero {
+      padding: 68px 20px 36px;
+      background: linear-gradient(170deg, #ecfdf5 0%, #fff 55%);
+      text-align: center;
+    }
+
+    .badge-live {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: #fff; border: 1.5px solid var(--green-b);
+      border-radius: 999px; padding: 6px 16px;
+      font-size: 12px; font-weight: 800; color: var(--green-d);
+      letter-spacing: .05em; text-transform: uppercase;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 10px rgba(5,150,105,.13);
+    }
+    .badge-live__dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--green); animation: pulse 1.4s ease infinite;
+    }
+    @keyframes pulse {
+      0%,100% { opacity:1; transform:scale(1); }
+      50%      { opacity:.4; transform:scale(.7); }
+    }
+
+    .hero__title {
+      font-size: 30px; font-weight: 800; line-height: 1.18;
+      color: var(--text); margin-bottom: 14px;
+    }
+    .hero__title .hl { color: var(--green); }
+
+    .hero__sub {
+      font-size: 15px; font-weight: 600; color: var(--text-2);
+      line-height: 1.65; margin-bottom: 22px; max-width: 380px; margin-left: auto; margin-right: auto;
+    }
+
+    /* trust chips */
+    .chips { display: flex; gap: 7px; flex-wrap: wrap; justify-content: center; margin-bottom: 26px; }
+    .chip {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: var(--green-l); border: 1.5px solid #a7f3d0;
+      border-radius: 999px; padding: 6px 13px;
+      font-size: 12px; font-weight: 700; color: var(--green-dd);
+    }
+    .chip svg { width: 13px; height: 13px; stroke: var(--green); fill: none; }
+
+    /* price card */
+    .price-card {
+      background: var(--green); border-radius: 22px;
+      padding: 22px 20px 24px; margin-bottom: 14px;
+      text-align: center; position: relative; overflow: hidden;
+    }
+    .price-card::before {
+      content: ''; position: absolute; top:-40px; right:-40px;
+      width: 120px; height: 120px; border-radius: 50%; background: rgba(255,255,255,.1);
+    }
+    .price-card::after {
+      content: ''; position: absolute; bottom:-30px; left:-30px;
+      width: 90px; height: 90px; border-radius: 50%; background: rgba(255,255,255,.08);
+    }
+    .price-card__label { font-size: 13px; color: rgba(255,255,255,.85); font-weight: 600; margin-bottom: 8px; position: relative; z-index:1; }
+    .price-card__row {
+      display: flex; align-items: flex-start; justify-content: center; gap: 3px;
+      margin-bottom: 6px; position: relative; z-index:1;
+    }
+    .price-card__cur  { font-size: 20px; font-weight: 700; color: #fff; margin-top: 10px; }
+    .price-card__val  { font-size: 64px; font-weight: 800; color: #fff; line-height: 1; }
+    .price-card__dec  { font-size: 28px; font-weight: 700; color: rgba(255,255,255,.85); margin-top: 16px; }
+    .price-card__note { font-size: 12px; color: rgba(255,255,255,.75); position: relative; z-index:1; }
+
+    /* CTA button */
+    .btn-cta {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      width: 100%; background: var(--green);
+      color: #fff; font-weight: 800; font-size: 17px;
+      padding: 18px; border-radius: 999px; border: none; cursor: pointer;
+      box-shadow: 0 8px 28px rgba(5,150,105,.50);
+      transition: background .15s, transform .1s;
+      text-align: center;
+    }
+    .btn-cta:active { transform: scale(.97); }
+    .btn-cta:hover  { background: var(--green-d); }
+    .btn-cta--white {
+      background: #fff; color: var(--green-d);
+      box-shadow: 0 6px 20px rgba(0,0,0,.18);
+    }
+    .btn-cta--white:hover { background: #f0fdf4; }
+    .btn-cta svg { width: 20px; height: 20px; stroke: currentColor; fill:none; }
+
+    .hero__guarantee {
+      font-size: 12px; font-weight: 600; color: var(--text-3);
+      margin-top: 12px;
+    }
+    .hero__guarantee strong { color: var(--green-d); }
+
+    /* ──────────────────────── PAIN COMPARISON */
+    .compare {
+      background: var(--slate-l); padding: 32px 20px;
+      border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+    }
+    .compare__title {
+      text-align: center; font-size: 17px; font-weight: 800;
+      color: var(--text); margin-bottom: 18px; line-height: 1.3;
+    }
+    .compare__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .cmp-col { border-radius: 16px; padding: 16px 14px; }
+    .cmp-col--bad  { background: #fff1f2; border: 1.5px solid #fecaca; }
+    .cmp-col--good { background: var(--green-l); border: 1.5px solid #a7f3d0; }
+    .cmp-col__head {
+      font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase;
+      margin-bottom: 12px; display: flex; align-items: center; gap: 5px;
+    }
+    .cmp-col--bad  .cmp-col__head { color: #b91c1c; }
+    .cmp-col--good .cmp-col__head { color: var(--green-d); }
+    .cmp-item {
+      font-size: 12px; font-weight: 600; margin-bottom: 8px; display: flex; align-items: flex-start; gap: 6px;
+      line-height: 1.4;
+    }
+    .cmp-col--bad  .cmp-item { color: #7f1d1d; }
+    .cmp-col--good .cmp-item { color: var(--green-dd); }
+    .cmp-item svg { flex-shrink:0; margin-top:2px; }
+
+    /* ──────────────────────── SECTION */
+    .section { padding: 38px 20px; }
+    .section--gray { background: var(--slate-l); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+
+    .eyebrow {
+      text-align: center; font-size: 11px; font-weight: 800;
+      letter-spacing: .18em; text-transform: uppercase;
+      color: var(--green-d); margin-bottom: 6px;
+    }
+    .section__title {
+      text-align: center; font-size: 22px; font-weight: 800;
+      color: var(--text); margin-bottom: 22px; line-height: 1.25;
+    }
+
+    /* ──────────────────────── NUMBERS STRIP */
+    .numbers { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 26px; }
+    .num-card {
+      background: #fff; border: 1.5px solid var(--border); border-radius: 16px;
+      padding: 16px 10px; text-align: center;
+      box-shadow: 0 1px 4px rgba(0,0,0,.05);
+    }
+    .num-card__val { font-size: 22px; font-weight: 800; color: var(--green-d); margin-bottom: 3px; }
+    .num-card__lbl { font-size: 10px; font-weight: 700; color: var(--text-3); line-height: 1.3; }
+
+    /* ──────────────────────── TESTIMONIALS */
+    .tcard {
+      background: #fff; border-radius: 16px; border: 1.5px solid var(--border);
+      padding: 18px; margin-bottom: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.06);
+    }
+    .tcard__stars { display: flex; gap: 2px; margin-bottom: 10px; }
+    .tcard__stars svg { width: 15px; height: 15px; fill: #f59e0b; color: #f59e0b; }
+    .tcard__text {
+      font-size: 14px; color: var(--text-2); font-weight: 600;
+      line-height: 1.6; margin-bottom: 12px; font-style: italic;
+    }
+    .tcard__foot { display: flex; align-items: center; justify-content: space-between; }
+    .tcard__name { font-size: 13px; font-weight: 800; color: var(--text); }
+    .tcard__time { font-size: 11px; font-weight: 500; color: var(--text-3); }
+    .tcard__google {
+      display: flex; align-items: center; gap: 4px;
+      background: var(--green-l); border-radius: 999px;
+      padding: 4px 10px; font-size: 11px; font-weight: 800; color: var(--green-d);
+    }
+    .tcard__google svg { width: 11px; height: 11px; fill: #f59e0b; color: #f59e0b; }
+
+    .btn-more {
+      width: 100%; background: transparent; border: 2px solid var(--border);
+      border-radius: 999px; color: var(--text-3); font-weight: 700; font-size: 13px;
+      padding: 12px; cursor: pointer; margin-top: 6px;
+      transition: border-color .15s, color .15s;
+    }
+    .btn-more:hover { border-color: var(--green); color: var(--green); }
+
+    /* ──────────────────────── STEPS */
+    .steps { display: flex; flex-direction: column; gap: 0; }
+    .step  { display: flex; gap: 16px; align-items: flex-start; position: relative; padding-bottom: 28px; }
+    .step:last-child { padding-bottom: 0; }
+    .step__left { display: flex; flex-direction: column; align-items: center; }
+    .step__num {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: var(--green); color: #fff;
+      font-size: 18px; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; box-shadow: 0 4px 14px rgba(5,150,105,.4);
+    }
+    .step__line { width: 2px; flex: 1; background: #a7f3d0; margin-top: 8px; min-height: 30px; }
+    .step:last-child .step__line { display: none; }
+    .step__body { padding-top: 10px; }
+    .step__title { font-size: 16px; font-weight: 800; color: var(--text); margin-bottom: 5px; }
+    .step__desc  { font-size: 14px; font-weight: 500; color: var(--text-2); line-height: 1.6; }
+    .step__tag {
+      display: inline-block; margin-top: 6px;
+      background: var(--green-l); border: 1px solid #a7f3d0;
+      border-radius: 999px; padding: 3px 10px;
+      font-size: 11px; font-weight: 800; color: var(--green-d);
+    }
+
+    /* ──────────────────────── DOCTOR */
+    .doctor-card {
+      background: var(--green-l); border: 1.5px solid #a7f3d0;
+      border-radius: 20px; padding: 20px;
+      display: flex; gap: 16px; align-items: center; margin-bottom: 16px;
+    }
+    .doctor-avatar {
+      width: 60px; height: 60px; border-radius: 50%; overflow: hidden;
+      background: var(--green); flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 14px rgba(5,150,105,.35);
+    }
+    .doctor-avatar img { width: 100%; height: 100%; object-fit: cover; object-position: center top; }
+    .doctor-avatar svg { width: 32px; height: 32px; stroke: #fff; fill:none; }
+    .doctor-name { font-size: 16px; font-weight: 800; color: var(--text); margin-bottom: 3px; }
+    .doctor-crm  { font-size: 13px; font-weight: 700; color: var(--green-d); margin-bottom: 5px; }
+    .doctor-desc { font-size: 12px; font-weight: 500; color: var(--text-2); line-height: 1.5; }
+
+    .seals { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
+    .seal {
+      background: #fff; border: 1.5px solid var(--border); border-radius: 14px;
+      padding: 14px 10px; text-align: center;
+      box-shadow: 0 1px 4px rgba(0,0,0,.05);
+    }
+    .seal svg  { width: 24px; height: 24px; stroke: var(--green); fill:none; margin: 0 auto 6px; }
+    .seal__t   { font-size: 12px; font-weight: 800; color: var(--text); margin-bottom: 2px; }
+    .seal__s   { font-size: 10px; font-weight: 500; color: var(--text-3); line-height: 1.4; }
+
+    /* ──────────────────────── MIDIA */
+    .midia { text-align: center; padding: 28px 20px; background: var(--slate-l); border-top: 1px solid var(--border); }
+    .midia__label { font-size: 11px; font-weight: 800; letter-spacing: .15em; text-transform: uppercase; color: var(--text-3); margin-bottom: 14px; }
+    .midia__logos { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 18px; }
+    .midia__logo { font-size: 14px; font-weight: 800; color: #94a3b8; letter-spacing: -.02em; }
+
+    /* ──────────────────────── FAQ */
+    .faq-item { border-bottom: 1px solid var(--border); padding: 16px 0; }
+    .faq-item:first-child { border-top: 1px solid var(--border); }
+    .faq-btn {
+      width: 100%; background: none; border: none; cursor: pointer;
+      display: flex; align-items: flex-start; justify-content: space-between; gap: 14px;
+      text-align: left; padding: 0;
+    }
+    .faq-btn__q { font-size: 14px; font-weight: 700; color: var(--text); line-height: 1.4; }
+    .faq-icon {
+      width: 24px; height: 24px; border-radius: 50%;
+      background: var(--green-l); flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .15s;
+    }
+    .faq-icon svg { width: 12px; height: 12px; stroke: var(--green); fill:none; transition: transform .25s; }
+    .faq-icon.open { background: var(--green); }
+    .faq-icon.open svg { stroke: #fff; transform: rotate(45deg); }
+    .faq-answer {
+      font-size: 14px; font-weight: 500; color: var(--text-2); line-height: 1.65;
+      max-height: 0; overflow: hidden; transition: max-height .3s ease, margin-top .2s;
+    }
+    .faq-answer.open { max-height: 300px; margin-top: 12px; }
+
+    /* ──────────────────────── GUARANTEE BLOCK */
+    .guarantee-block {
+      background: #f0fdf4; border: 2px solid #a7f3d0;
+      border-radius: 20px; padding: 22px 20px; margin: 0 20px;
+      text-align: center;
+    }
+    .guarantee-block svg { width: 36px; height: 36px; stroke: var(--green); fill:none; margin: 0 auto 12px; }
+    .guarantee-block__title { font-size: 18px; font-weight: 800; color: var(--text); margin-bottom: 8px; }
+    .guarantee-block__text  { font-size: 14px; font-weight: 500; color: var(--text-2); line-height: 1.6; margin-bottom: 0; }
+
+    /* ──────────────────────── CTA BLOCK */
+    .cta-block {
+      background: var(--green); padding: 40px 20px;
+      text-align: center; position: relative; overflow: hidden;
+    }
+    .cta-block::before {
+      content:''; position:absolute; top:-70px; right:-50px;
+      width:200px; height:200px; border-radius:50%; background:rgba(255,255,255,.08);
+    }
+    .cta-block::after {
+      content:''; position:absolute; bottom:-50px; left:-40px;
+      width:140px; height:140px; border-radius:50%; background:rgba(255,255,255,.07);
+    }
+    .cta-block__title { font-size: 24px; font-weight: 800; color:#fff; margin-bottom: 8px; position:relative; z-index:1; line-height:1.25; }
+    .cta-block__sub   { font-size: 14px; font-weight: 600; color:rgba(255,255,255,.85); margin-bottom: 22px; position:relative; z-index:1; }
+    .cta-block .btn-cta { position:relative; z-index:1; }
+    .cta-block__note  { font-size: 12px; color:rgba(255,255,255,.65); margin-top:12px; position:relative; z-index:1; }
+
+    /* ──────────────────────── FOOTER */
+    .footer { padding: 28px 20px; background: #f8fafc; text-align: center; border-top: 1px solid var(--border); }
+    .footer__links { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 16px; margin-bottom: 14px; }
+    .footer__links a { font-size: 12px; font-weight: 600; color: var(--text-3); }
+    .footer__links a:hover { color: var(--green); }
+    .footer__sep { color: #cbd5e1; }
+    .footer__note { font-size: 11px; font-weight: 500; color: #94a3b8; line-height: 1.8; }
+
+    /* ──────────────────────── COOKIE */
+    .cookie {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 150;
+      background: #1e293b; padding: 14px 20px; display: none;
+    }
+    .cookie__inner {
+      max-width: 480px; margin: 0 auto;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .cookie__text { font-size: 12px; font-weight: 500; color: #94a3b8; flex:1; line-height: 1.5; }
+    .cookie__text a { color: #34d399; text-decoration: underline; }
+    .cookie__btn {
+      background: var(--green); color: #fff;
+      font-weight: 700; font-size: 13px;
+      padding: 9px 20px; border-radius: 999px; border: none; cursor: pointer; white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ▓▓ HEADER ▓▓ -->
+<header class="header">
+  <div class="header__inner">
+    <div class="logo">
+      <div class="logo__icon">
+        <img src="logo.png" alt="MedFácil" onerror="this.parentNode.innerHTML='<svg viewBox=\'0 0 24 24\' stroke-width=\'2.5\' stroke-linecap=\'round\' stroke-linejoin=\'round\'><path d=\'M9 12h6m-3-3v6m-7 3h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z\'/></svg>'" />
+      </div>
+      <span class="logo__text">MedFácil</span>
+    </div>
+    <a href="/requisicao.html" class="btn-header">Solicitar atestado</a>
+  </div>
+</header>
+
+<!-- ▓▓ HERO ▓▓ -->
+<section class="hero">
+
+  <div class="badge-live">
+    <div class="badge-live__dot"></div>
+    Atendimento Médico Online 24h
+  </div>
+
+  <h1 class="hero__title">
+    Atestado médico online<br>
+    <span class="hl">24h, em até 5 minutos</span><br>
+    pelo seu celular.
+  </h1>
+
+  <p class="hero__sub">
+    Solicite seu atestado médico por apenas R$ 29, respondendo a um questionário clínico rápido —
+    sem videochamada e sem sair de casa. Documento assinado e carimbado por
+    médicos brasileiros com CRM ativo.
+  </p>
+  <p class="hero__sub" style="font-size:13px;margin-top:-12px;color:#16a34a;font-weight:700">Simples, rápido e confiável.</p>
+
+  <div class="chips">
+    <div class="chip">
+      <svg viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+      Médico com CRM
+    </div>
+    <div class="chip">
+      <svg viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      Atendimento em minutos
+    </div>
+    <div class="chip">
+      <svg viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>
+      Válido no trabalho e escola
+    </div>
+  </div>
+
+  <div class="price-card">
+    <div class="price-card__label">Consulta médica online · documento por e-mail</div>
+    <div class="price-card__row">
+      <span class="price-card__cur">R$</span>
+      <span class="price-card__val">29</span>
+      <span class="price-card__dec">,00</span>
+    </div>
+    <div class="price-card__note">Pagamento único via PIX · Liberado na hora</div>
+  </div>
+
+  <a href="/requisicao.html" class="btn-cta">
+    <svg viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+    Solicitar atestado
+  </a>
+  <p class="hero__guarantee"><strong>Garantia:</strong> se o médico não realizar o atendimento, devolvemos seu dinheiro</p>
+  <p style="font-size:11.5px;color:#94a3b8;margin-top:8px;line-height:1.5;max-width:380px;margin-left:auto;margin-right:auto">O atestado é emitido <strong style="color:#64748b">somente se o médico considerar clinicamente justificado</strong>, a critério do profissional.</p>
+
+</section>
+
+<!-- ▓▓ COMPARAÇÃO: POSTO vs ONLINE ▓▓ -->
+<div class="compare">
+  <h2 class="compare__title">Ir ao médico pessoalmente<br>ou se consultar online em minutos?</h2>
+  <div class="compare__grid">
+    <div class="cmp-col cmp-col--bad">
+      <div class="cmp-col__head">
+        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="#dc2626" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        Ir pessoalmente
+      </div>
+      <div class="cmp-item">
+        <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="#dc2626" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        Horas de espera na fila
+      </div>
+      <div class="cmp-item">
+        <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="#dc2626" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        Sair de casa doente
+      </div>
+      <div class="cmp-item">
+        <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="#dc2626" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        Fecha à noite e feriados
+      </div>
+      <div class="cmp-item">
+        <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="#dc2626" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        Paga transporte, perde o dia
+      </div>
+    </div>
+    <div class="cmp-col cmp-col--good">
+      <div class="cmp-col__head">
+        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="#059669" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+        Pelo celular
+      </div>
+      <div class="cmp-item">
+        <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="#059669" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+        Atendimento em minutos
+      </div>
+      <div class="cmp-item">
+        <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="#059669" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+        100% pelo celular, em casa
+      </div>
+      <div class="cmp-item">
+        <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="#059669" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+        24h, todo dia do ano
+      </div>
+      <div class="cmp-item">
+        <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="#059669" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+        Só R$ 29, com garantia total
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ▓▓ DEPOIMENTOS ▓▓ -->
+<section class="section">
+
+  <p class="eyebrow">Avaliações reais — Google</p>
+  <h2 class="section__title">Quem usou aprovou.<br>Veja o que dizem:</h2>
+
+  <!-- números -->
+  <div class="numbers">
+    <div class="num-card">
+      <div class="num-card__val">+15mil</div>
+      <div class="num-card__lbl">Atendimentos realizados</div>
+    </div>
+    <div class="num-card">
+      <div class="num-card__val">5.0★</div>
+      <div class="num-card__lbl">Nota no Google</div>
+    </div>
+    <div class="num-card">
+      <div class="num-card__val">5 min</div>
+      <div class="num-card__lbl">Tempo médio</div>
+    </div>
+  </div>
+
+  <!-- cards -->
+  <div id="tlist">
+    <div class="tcard">
+      <div class="tcard__stars">
+        <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      </div>
+      <p class="tcard__text">"Consegui falar com um médico de CRM ativo pelo celular, sem fila e sem sair de casa. Atendimento sério e rápido, me senti bem cuidado."</p>
+      <div class="tcard__foot">
+        <div><div class="tcard__name">Roberto A.</div><div class="tcard__time">há 2 semanas</div></div>
+        <div class="tcard__google">Google <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
+      </div>
+    </div>
+
+    <div class="tcard">
+      <div class="tcard__stars">
+        <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      </div>
+      <p class="tcard__text">"Acordei mal de madrugada e consegui atendimento médico na hora, sem precisar sair de casa. O profissional foi muito atencioso comigo."</p>
+      <div class="tcard__foot">
+        <div><div class="tcard__name">Ana Beatriz</div><div class="tcard__time">há 1 semana</div></div>
+        <div class="tcard__google">Google <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
+      </div>
+    </div>
+
+    <div class="tcard">
+      <div class="tcard__stars">
+        <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      </div>
+      <p class="tcard__text">"Atendimento de verdade, com médico registrado no CRM. Processo simples, transparente e humano. Recomendo para quem precisa de praticidade."</p>
+      <div class="tcard__foot">
+        <div><div class="tcard__name">Fernando S.</div><div class="tcard__time">há 1 semana</div></div>
+        <div class="tcard__google">Google <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
+      </div>
+    </div>
+
+    <!-- hidden -->
+    <div class="tcard" style="display:none" id="t4">
+      <div class="tcard__stars">
+        <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      </div>
+      <p class="tcard__text">"Precisava urgente pro trabalho na segunda de manhã. Resolvi no domingo à noite, sem sair do sofá. Que serviço incrível!"</p>
+      <div class="tcard__foot">
+        <div><div class="tcard__name">Mariana S.</div><div class="tcard__time">há 5 dias</div></div>
+        <div class="tcard__google">Google <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
+      </div>
+    </div>
+
+    <div class="tcard" style="display:none" id="t5">
+      <div class="tcard__stars">
+        <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      </div>
+      <p class="tcard__text">"Já usei 3 vezes e sempre foi rápido e fácil. O chefe nunca reclamou do atestado. Agora não preciso mais me humilhar esperando no posto."</p>
+      <div class="tcard__foot">
+        <div><div class="tcard__name">Carlos E.</div><div class="tcard__time">há 3 dias</div></div>
+        <div class="tcard__google">Google <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn-more" id="btn-more-t" onclick="showMore()">Ver mais avaliações ↓</button>
+
+</section>
+
+<!-- ▓▓ COMO FUNCIONA ▓▓ -->
+<section class="section section--gray">
+  <p class="eyebrow">É simples assim</p>
+  <h2 class="section__title">3 passos e o atestado<br>está no seu celular</h2>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step__left"><div class="step__num">1</div><div class="step__line"></div></div>
+      <div class="step__body">
+        <div class="step__title">Preencha o formulário</div>
+        <div class="step__desc">Responda umas perguntas rápidas sobre seus sintomas pelo celular. Sem videochamada, sem complicação.</div>
+        <span class="step__tag">⏱ Leva menos de 3 minutos</span>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step__left"><div class="step__num">2</div><div class="step__line"></div></div>
+      <div class="step__body">
+        <div class="step__title">Pague R$ 29 via PIX</div>
+        <div class="step__desc">Pagamento rápido e seguro. Assim que confirmar, o médico já começa a avaliar.</div>
+        <span class="step__tag">🔒 PIX seguro e instantâneo</span>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step__left"><div class="step__num">3</div><div class="step__line"></div></div>
+      <div class="step__body">
+        <div class="step__title">Receba o PDF no e-mail</div>
+        <div class="step__desc">Seu atestado chega assinado e carimbado pelo médico em PDF. Pode mandar pro chefe na hora.</div>
+        <span class="step__tag">✅ Válido no trabalho e escola</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:30px">
+    <a href="/requisicao.html" class="btn-cta">Solicitar atestado — R$ 29</a>
+  </div>
+</section>
+
+<!-- ▓▓ MÉDICO + SELOS ▓▓ -->
+<section class="section">
+  <p class="eyebrow">Transparência total</p>
+  <h2 class="section__title">Médico de verdade,<br>CRM ativo e verificável</h2>
+
+  <div class="doctor-card">
+    <div class="doctor-avatar">
+      <img src="doutor.png" alt="Médico" onerror="this.parentNode.innerHTML='<svg viewBox=\'0 0 24 24\' stroke-width=\'1.5\' stroke-linecap=\'round\' stroke-linejoin=\'round\'><path d=\'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z\'/></svg>'" />
+    </div>
+    <div>
+      <div class="doctor-name">Dr. Wagner Oliveira</div>
+      <div class="doctor-crm">CRM/SP 142.857 — Registro ativo ✓</div>
+      <div class="doctor-desc">Médico plantonista com experiência em telemedicina. Disponível 24h por dia, todos os dias do ano, para avaliar o seu caso clínico e, quando indicado, emitir o atestado digital.</div>
+    </div>
+  </div>
+
+  <div class="seals">
+    <div class="seal">
+      <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+      <div class="seal__t">CFM</div>
+      <div class="seal__s">Res. nº 2.314/2022</div>
+    </div>
+    <div class="seal">
+      <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      <div class="seal__t">24h / 7 dias</div>
+      <div class="seal__s">Feriado e fim de semana</div>
+    </div>
+    <div class="seal">
+      <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4m-4 6a8 8 0 100-16 8 8 0 000 16z"/></svg>
+      <div class="seal__t">Garantia</div>
+      <div class="seal__s">100% do dinheiro de volta</div>
+    </div>
+  </div>
+</section>
+
+<!-- ▓▓ MÍDIA ▓▓ -->
+<div class="midia">
+  <div class="midia__label">Reconhecido pela mídia</div>
+  <div class="midia__logos">
+    <span class="midia__logo">R7</span>
+    <span class="midia__logo">iG</span>
+    <span class="midia__logo">GLOBO</span>
+    <span class="midia__logo">UOL</span>
+    <span class="midia__logo">EXAME</span>
+  </div>
+</div>
+
+<!-- ▓▓ FAQ ▓▓ -->
+<section class="section section--gray">
+  <p class="eyebrow">Tire suas dúvidas</p>
+  <h2 class="section__title">Perguntas frequentes</h2>
+  <div id="faq"></div>
+  <div style="margin-top:30px">
+    <a href="/requisicao.html" class="btn-cta">Solicitar atestado</a>
+  </div>
+</section>
+
+<!-- ▓▓ GARANTIA ▓▓ -->
+<div style="padding:36px 0;background:#fff">
+  <div class="guarantee-block">
+    <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+    <div class="guarantee-block__title">Garantia de 7 dias</div>
+    <p class="guarantee-block__text">
+      Se seu empregador ou escola <strong>não aceitar o atestado</strong>, devolvemos <strong>100% do valor</strong> sem burocracia. Sem perguntas, sem enrolação. Você não tem nada a perder.
+    </p>
+  </div>
+</div>
+
+<!-- ▓▓ CTA FINAL ▓▓ -->
+<div class="cta-block">
+  <h2 class="cta-block__title">Precisa de atendimento médico?<br>Consulte-se online agora.</h2>
+  <p class="cta-block__sub">Médico de CRM ativo disponível agora · R$ 29 via PIX · atendimento 24h</p>
+  <a href="/requisicao.html" class="btn-cta btn-cta--white">
+    <svg viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+    Solicitar atestado
+  </a>
+  <div class="cta-block__note">Garantia: se o médico não realizar o atendimento, dinheiro de volta · Atende 24h</div>
+</div>
+
+<!-- ▓▓ FOOTER ▓▓ -->
+<footer class="footer">
+  <div class="footer__links">
+    <a href="/termos-de-uso.html">Termos de uso</a>
+    <span class="footer__sep">·</span>
+    <a href="/politica-privacidade.html">Privacidade</a>
+    <span class="footer__sep">·</span>
+    <a href="/garantia.html">Política de reembolso</a>
+    <span class="footer__sep">·</span>
+    <a href="/empresa.html">Sobre nós</a>
+  </div>
+  <div class="footer__note">
+    Atestado médico online 24h · Conforme Resolução CFM nº 2.314/2022 e Lei nº 13.989/2020<br>
+    MedFácil Telemedicina · CNPJ: 64.713.745/0001-80<br>
+    Rua Santina Figliagi Ceccato, 460 — Bloco A, Apt 73 — Vila Itália — São José do Rio Preto/SP — CEP 15035-180<br>
+    Atendimento: (17) 3353-3756 · medfacilagora@gmail.com<br>
+    © <span id="year"></span> MedFácil Telemedicina. Todos os direitos reservados.
+  </div>
+</footer>
+
+<!-- ▓▓ COOKIE ▓▓ -->
+<div class="cookie" id="cookie">
+  <div class="cookie__inner">
+    <p class="cookie__text">Usamos cookies para melhorar sua experiência. Veja nossa <a href="/politica-privacidade.html">Política de Privacidade</a>.</p>
+    <button class="cookie__btn" onclick="acceptCookie()">Ok, entendi</button>
+  </div>
+</div>
+
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  /* show more testimonials */
+  function showMore() {
+    document.getElementById('t4').style.display = 'block';
+    document.getElementById('t5').style.display = 'block';
+    document.getElementById('btn-more-t').style.display = 'none';
+  }
+
+  /* FAQ */
+  const FAQS = [
+    { q: 'O atestado tem validade legal?', a: 'Sim. Os atestados são emitidos por médicos com CRM ativo e têm validade legal em todo o Brasil, conforme a Resolução CFM nº 2.314/2022 e a Lei de Telemedicina nº 13.989/2020. A emissão depende sempre da avaliação clínica do médico.' },
+    { q: 'Como funciona o atendimento?', a: 'Você descreve o seu caso em um questionário clínico ou por videochamada. Um médico com CRM ativo avalia as suas informações e, havendo indicação clínica, emite o atestado digital, enviado ao seu e-mail. O atendimento costuma ser concluído em poucos minutos.' },
+    { q: 'Quem define os dias de afastamento?', a: 'O período de afastamento é definido exclusivamente pelo médico, com base na avaliação clínica do seu caso. Para situações mais complexas, pode ser recomendada uma consulta presencial com um especialista.' },
+    { q: 'Como é feita a avaliação médica?', a: 'Você escolhe: pode ser por questionário clínico ou por videochamada com o médico. Em ambos, o profissional avalia o seu caso antes de qualquer decisão sobre a emissão de documento.' },
+    { q: 'E se o médico não emitir o atestado?', a: 'A emissão é uma decisão clínica do médico e pode não ocorrer caso não haja justificativa. Nessa situação, ou se o atendimento não for realizado, você tem direito ao reembolso conforme a nossa Política de Garantia e Reembolso.' },
+    { q: 'Como funciona o pagamento?', a: 'O pagamento é feito via PIX. Assim que confirmado, o médico inicia a avaliação do seu caso. É um pagamento único, sem mensalidade — salvo se você optar pelo Plano Mensal.' },
+  ];
+
+  let openFaq = 0;
+  function toggleFaq(i) { openFaq = openFaq === i ? null : i; renderFaq(); }
+  function renderFaq() {
+    document.getElementById('faq').innerHTML = FAQS.map((f, i) => `
+      <div class="faq-item">
+        <button class="faq-btn" onclick="toggleFaq(${i})">
+          <span class="faq-btn__q">${f.q}</span>
+          <span class="faq-icon ${openFaq===i?'open':''}">
+            <svg viewBox="0 0 24 24" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <path d="${openFaq===i ? 'M6 18L18 6M6 6l12 12' : 'M12 4v16m8-8H4'}"/>
+            </svg>
+          </span>
+        </button>
+        <div class="faq-answer ${openFaq===i?'open':''}">${f.a}</div>
+      </div>
+    `).join('');
+  }
+  renderFaq();
+
+  /* cookie */
+  function acceptCookie() {
+    document.getElementById('cookie').style.display = 'none';
+    localStorage.setItem('cookie-ok','1');
+  }
+  if (!localStorage.getItem('cookie-ok')) {
+    setTimeout(() => { document.getElementById('cookie').style.display='block'; }, 1200);
+  }
+</script>
+</body>
+</html>

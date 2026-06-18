@@ -79,14 +79,20 @@ module.exports = async function handler(req, res) {
     }
 
     // Devolve ao frontend APENAS o necessário (nunca as chaves)
-    const pix = data.pix || {};
+    // Estrutura real da resposta MasterPag:
+    // { success, transaction: { id, status, amount, fee_amount, net_amount },
+    //   pix: { qrCode, copyPaste, expiresAt, externalId } }
+    const transaction = data.transaction || {};
+    const pix         = data.pix         || {};
+
     res.status(200).json({
-      id: data.id,
-      status: data.status,
-      amount: data.amount,
-      qrCode: pix.qrCode,            // copia e cola (EMV)
-      qrCodeUrl: pix.qrCodeUrl,      // imagem do QR (opcional)
-      expirationDate: pix.expirationDate
+      id:             transaction.id,
+      status:         transaction.status,
+      amount:         transaction.amount,
+      qrCode:         pix.qrCode    || pix.copyPaste,   // código copia e cola EMV
+      qrCodeUrl:      pix.qrCodeUrl || null,             // imagem QR (se disponivel)
+      copyPaste:      pix.copyPaste || pix.qrCode,
+      expirationDate: pix.expiresAt || null,
     });
   } catch (e) {
     res.status(500).json({ error: 'Falha interna ao gerar a cobrança PIX.' });

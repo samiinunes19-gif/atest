@@ -23,10 +23,12 @@ module.exports = async function handler(req, res) {
       headers: { 'x-public-key': PUB, 'x-secret-key': SEC }
     });
     const data = await r.json().catch(() => ({}));
+    // Estrutura real: { success, transaction: { id, status, amount, ... } }
     const t = data.transaction || data || {};
     res.status(r.ok ? 200 : r.status).json({
       status: t.status || 'unknown',
-      paidAt: t.paid_at || null
+      paidAt: t.paid_at || t.paidAt || null,
+      amount: t.amount || null,
     });
   } catch (e) {
     res.status(500).json({ error: 'Falha ao consultar o status da transação.' });

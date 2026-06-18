@@ -10,6 +10,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    @keyframes fadeUpSection {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
     body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f8fafc; color: #1e293b; -webkit-font-smoothing: antialiased; min-height: 100vh; display: flex; flex-direction: column; }
     a { text-decoration: none; }
     button { font-family: inherit; }
@@ -889,20 +893,32 @@
           </div>
         </div>
 
-        <div style="margin-bottom:14px">
+        <!-- Seção de upload: fica OCULTA até o PIX ser confirmado como pago -->
+        <div id="upload-section" style="display:none;margin-bottom:14px;animation:fadeUpSection .5s ease both">
+          <!-- Banner de pagamento confirmado -->
+          <div id="pay-confirmed-banner" style="background:#f0fdf4;border:1.5px solid #22c55e;border-radius:14px;padding:14px 16px;margin-bottom:14px;display:flex;align-items:center;gap:10px">
+            <div style="width:36px;height:36px;border-radius:50%;background:#22c55e;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </div>
+            <div>
+              <div style="font-size:14px;font-weight:800;color:#166534">✅ Pagamento confirmado!</div>
+              <div style="font-size:12px;color:#15803d;margin-top:1px">Agora envie o comprovante para finalizar seu atendimento</div>
+            </div>
+          </div>
+
           <div class="upload-box" id="upload-box" onclick="document.getElementById('file-in').click()">
             <div class="upload-box-icon"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
-            <h4>Enviar Comprovante</h4>
-            <p>Anexe o comprovante do PIX para concluir seu atendimento</p>
+            <h4>Enviar Comprovante do PIX</h4>
+            <p>Anexe o comprovante para concluir seu atendimento</p>
           </div>
           <div class="upload-status hidden" id="upload-status"></div>
           <input type="file" id="file-in" accept="image/*,application/pdf" style="display:none" onchange="onUpload(this)" />
-        </div>
 
-        <button class="btn-primary" id="btn-confirm" onclick="confirmPay()" disabled style="margin-bottom:14px">
-          <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-          Já fiz o pagamento
-        </button>
+          <button class="btn-primary" id="btn-confirm" onclick="confirmPay()" disabled style="margin-top:12px;margin-bottom:14px">
+            <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            Concluir Atendimento
+          </button>
+        </div>
 
         <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:16px">
           <div style="display:flex;align-items:center;gap:5px;padding:6px 12px;background:#f0fdf4;border-radius:8px;font-size:11px;color:#125F39;font-weight:700">
@@ -1104,7 +1120,8 @@ async function prepararPagamentoPedido(){
     S.txPedido = cob.id;
     document.getElementById('pix-qr').src = qrImg(cob.qrCode);
     area.textContent = cob.qrCode;
-    iniciarPolling(cob.id, ()=>{ if(!S.fileOk){ confirmPay(); } });
+    // Quando o PIX for confirmado como pago, revela a seção de upload do comprovante
+    iniciarPolling(cob.id, revelarUpload);
   } else {
     pixErro('pedido');
   }
@@ -1476,6 +1493,15 @@ function copyPix(){
   setTimeout(()=>{ area.classList.remove('copied'); area.textContent=PIX_PEDIDO; btn.classList.remove('copied'); btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:17px;height:17px"><path d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2"/><rect x="8" y="8" width="12" height="12" rx="2"/></svg>Copiar Código PIX'; },3000);
 }
 
+// Exibe a seção de upload após o PIX ser confirmado como pago
+function revelarUpload(){
+  const sec = document.getElementById('upload-section');
+  if(!sec) return;
+  sec.style.display = 'block';
+  // Rola suavemente até a seção de upload
+  setTimeout(() => sec.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
+}
+
 function onUpload(inp){
   if(!inp.files[0])return;
   const box=document.getElementById('upload-box'), st=document.getElementById('upload-status');
@@ -1489,9 +1515,42 @@ function onUpload(inp){
 }
 
 function confirmPay(){
-  const email=document.getElementById('email')?.value||'';
-  document.getElementById('modal-email').textContent=email;
-  document.getElementById('modal').classList.remove('hidden');
+  const email  = document.getElementById('email')?.value  || '';
+  const nome   = document.getElementById('nome')?.value   || '';
+  const cpf    = document.getElementById('cpf')?.value    || '';
+  const tel    = document.getElementById('tel')?.value    || '';
+  const fileEl = document.getElementById('file-in');
+  const btn    = document.getElementById('btn-confirm');
+
+  // Envia comprovante + dados da transação ao servidor em background
+  if (S.txPedido) {
+    const fd = new FormData();
+    fd.append('transacaoId', S.txPedido);
+    fd.append('nome',     nome);
+    fd.append('email',    email);
+    fd.append('cpf',      cpf.replace(/\D/g,''));
+    fd.append('telefone', tel.replace(/\D/g,''));
+    fd.append('valor',    String(totalPrice()));
+    fd.append('descricao','Atestado médico online - MedFácil');
+    if (fileEl && fileEl.files[0]) {
+      fd.append('comprovante', fileEl.files[0]);
+    }
+
+    // Desabilita o botão e mostra status de envio
+    if (btn) { btn.disabled = true; btn.textContent = 'Enviando...'; }
+
+    fetch('/api/salvar-comprovante', { method: 'POST', body: fd })
+      .then(r => r.json())
+      .catch(() => ({}))
+      .finally(() => {
+        // Independente do resultado, abre o modal de conclusão
+        document.getElementById('modal-email').textContent = email;
+        document.getElementById('modal').classList.remove('hidden');
+      });
+  } else {
+    document.getElementById('modal-email').textContent = email;
+    document.getElementById('modal').classList.remove('hidden');
+  }
 }
 </script>
 </body>
